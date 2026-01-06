@@ -1,0 +1,5 @@
+{
+  "name": "Centrac B Field Engineering Dashboard",
+  "description": "A comprehensive engineering tool for API 675 pump troubleshooting, suction analysis, discharge performance, and chemical dosing calculations based on the Milton Roy Centrac B O&M Manual.",
+  "requestFramePermissions": []
+}
