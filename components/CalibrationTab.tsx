@@ -47,7 +47,7 @@ const CalibrationTab: React.FC = () => {
             />
           </div>
           <div className="lg:col-span-2">
-             <InfoCard title="Calculated Output" value={gphResult} unit="GPH" status="neutral" />
+             <InfoCard title="Calculated Output" value={gphResult} unit="GPH" status="neutral" description="GPH = (Volume_mL / Time_sec) * 0.951" />
           </div>
         </div>
       </section>
@@ -87,21 +87,10 @@ const CalibrationTab: React.FC = () => {
             />
           </div>
           <div>
-            <InfoCard title="Required Pump Rate" value={dosingResult} unit="GPH" status="neutral" />
+            <InfoCard title="Required Pump Rate" value={dosingResult} unit="GPH" status="neutral" description="GPH = (MGD * PPM * 8.34) / (Density * 24)" />
           </div>
         </div>
       </section>
-
-      <div className="bg-slate-100 p-4 rounded-xl text-xs text-slate-600 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p className="font-bold uppercase mb-1">GPH Formula:</p>
-          <code className="bg-white px-2 py-1 rounded border">(Volume_mL / Time_sec) * 0.951</code>
-        </div>
-        <div>
-          <p className="font-bold uppercase mb-1">Dosing Formula:</p>
-          <code className="bg-white px-2 py-1 rounded border">(MGD * PPM * 8.34) / (Density * 24)</code>
-        </div>
-      </div>
     </div>
   );
 };

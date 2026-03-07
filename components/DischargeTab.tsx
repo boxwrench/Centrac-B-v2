@@ -102,7 +102,7 @@ const DischargeTab: React.FC = () => {
       <div className="p-4 bg-amber-50 rounded-xl border-l-4 border-amber-500 text-sm text-amber-900">
         <h5 className="font-bold mb-1">Engineering Insight:</h5>
         Reciprocating pumps follow a sinusoidal velocity profile. The "Peak" flow occurs during the middle of the discharge stroke. 
-        Fluid compression and diaphragm deformation reduce volumetric efficiency at high pressures (>200 PSI).
+        Fluid compression and diaphragm deformation reduce volumetric efficiency at high pressures (&gt;200 PSI).
       </div>
     </div>
   );

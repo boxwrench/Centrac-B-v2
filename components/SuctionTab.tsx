@@ -23,7 +23,8 @@ const SuctionTab: React.FC = () => {
     
     // Acceleration Head (Ha)
     // Ha = (L * N * Q * SG) / (D^2 * 18500)
-    const Ha = (L * N * Q * SG) / (Math.pow(D, 2) * CONVERSION_FACTORS.API675_CONSTANT);
+    // Prevent divide by zero if D is 0
+    const Ha = D > 0 ? (L * N * Q * SG) / (Math.pow(D, 2) * CONVERSION_FACTORS.API675_CONSTANT) : 0;
     
     // Static Lift Loss (Ls)
     // Ls = H_lift * 0.433 * SG
