@@ -40,6 +40,25 @@ server-sync are explicitly deferred and must be addable later without rework.
 
 ---
 
+## 1a. Guiding Principle — Built to Expand
+
+This is explicitly a **long-lived, heavily-iterated platform**, not a one-off app.
+Every structural decision favors cheap future expansion over short-term
+convenience. Concretely, this means:
+
+- **Additive, not invasive:** a new tool must be addable as a self-contained
+  `packs/<name>/` folder (plus, at most, a new IndexedDB store) without editing
+  existing engines, repos, or packs.
+- **Stable seams:** `engines` (pure calc), `db` (repos), and `ui` (primitives) are
+  the contracts everything else builds on. Keep them small and dependency-free so
+  they can absorb growth.
+- **Schema evolution is expected:** the IndexedDB layer must support versioned
+  migrations from day one (Dexie versioning), since the data model will grow.
+- **Deferred ≠ designed-out:** sync/export and the rest of the tool family are out
+  of scope now but must remain addable without reworking the core.
+
+When a plan step trades expandability for a shortcut, the shortcut loses.
+
 ## 2. Product Vision — The Tool Family
 
 This project is the **first tool in a family** bound by the plant operator's day,
@@ -224,3 +243,4 @@ manifest `start_url`/`scope` must match this base.
 5. No remaining Gemini/`API_KEY` code paths.
 6. Platform structure (`engines` / `db` / `packs` / `ui`) is in place so a new tool
    is addable as a pack without touching existing packs.
+7. IndexedDB uses versioned Dexie migrations, proving the schema can evolve safely.
