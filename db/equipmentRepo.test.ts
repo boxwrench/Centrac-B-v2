@@ -17,6 +17,7 @@ describe('equipmentRepo', () => {
 
   it('lists equipment newest-first', async () => {
     const a = await equipmentRepo.add({ tag: 'A', type: 'metering_pump' });
+    await new Promise((r) => setTimeout(r, 5));
     const b = await equipmentRepo.add({ tag: 'B', type: 'tank' });
     const list = await equipmentRepo.list();
     expect(list.map((e) => e.id)).toEqual([b.id, a.id]);

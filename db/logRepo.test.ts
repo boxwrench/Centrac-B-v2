@@ -21,6 +21,7 @@ describe('logRepo', () => {
 
   it('lists entries for a specific equipment id, newest-first', async () => {
     const a = await logRepo.add({ equipmentId: 'eq-1', kind: 'dosing', inputs: {}, outputs: {} });
+    await new Promise((r) => setTimeout(r, 5));
     const b = await logRepo.add({ equipmentId: 'eq-1', kind: 'hydraulics', inputs: {}, outputs: {} });
     await logRepo.add({ equipmentId: 'eq-2', kind: 'dosing', inputs: {}, outputs: {} });
     const list = await logRepo.listByEquipment('eq-1');

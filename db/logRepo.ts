@@ -10,8 +10,7 @@ export const logRepo = {
   },
 
   async listAll(): Promise<LogEntry[]> {
-    const entries = await db.logEntries.orderBy('timestamp').toArray();
-    return entries.reverse();
+    return db.logEntries.orderBy('timestamp').reverse().toArray();
   },
 
   async listByEquipment(equipmentId: string | null): Promise<LogEntry[]> {
