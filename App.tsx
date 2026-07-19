@@ -4,6 +4,7 @@ import { AppTab } from './types';
 import { ActiveAssetProvider } from './state/ActiveAssetContext';
 import { useOnlineStatus } from './state/useOnlineStatus';
 import AssetPicker from './components/ui/AssetPicker';
+import EquipmentPack from './packs/equipment/EquipmentPack';
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.ASSETS, label: 'Assets' },
@@ -55,7 +56,7 @@ const AppInner: React.FC = () => {
       </nav>
 
       <main className="flex-grow max-w-7xl mx-auto w-full px-4 py-8 md:px-8">
-        {activeTab === AppTab.ASSETS && <div className="text-slate-400">Equipment Register — Task 9</div>}
+        {activeTab === AppTab.ASSETS && <EquipmentPack />}
         {activeTab === AppTab.DOSING && <div className="text-slate-400">Dosing — Task 10</div>}
         {activeTab === AppTab.HYDRAULICS && <div className="text-slate-400">Hydraulics — Task 11</div>}
         {activeTab === AppTab.TROUBLESHOOTING && <div className="text-slate-400">Troubleshooting — Task 12</div>}
