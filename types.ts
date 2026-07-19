@@ -1,9 +1,9 @@
 
 export enum AppTab {
-  SUCTION = 'suction',
-  DISCHARGE = 'discharge',
-  CALIBRATION = 'calibration',
-  TROUBLESHOOTING = 'troubleshooting'
+  ASSETS = 'assets',
+  DOSING = 'dosing',
+  HYDRAULICS = 'hydraulics',
+  TROUBLESHOOTING = 'troubleshooting',
 }
 
 export interface TroubleshootingEntry {
