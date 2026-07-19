@@ -16,6 +16,6 @@ export interface TroubleshootingEntry {
 export interface CalculationResult {
   value: number;
   unit: string;
-  status?: 'pass' | 'fail' | 'warning';
+  status?: 'pass' | 'fail' | 'warning' | 'neutral';
   message?: string;
 }
