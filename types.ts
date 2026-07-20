@@ -99,3 +99,10 @@ export interface LogEntry {
   note?: string;
   timestamp: number;
 }
+
+export interface ReportRecord {
+  date: string;
+  operator?: string;
+  remarks?: string;
+  excludedLogIds: string[];
+}

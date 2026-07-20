@@ -1,9 +1,10 @@
 import Dexie, { Table } from 'dexie';
-import { Equipment, LogEntry } from '../types';
+import { Equipment, LogEntry, ReportRecord } from '../types';
 
 export class CentracDB extends Dexie {
   equipment!: Table<Equipment, string>;
   logEntries!: Table<LogEntry, string>;
+  reports!: Table<ReportRecord, string>;
 
   constructor() {
     super('centrac-b');
@@ -11,6 +12,12 @@ export class CentracDB extends Dexie {
     this.version(1).stores({
       equipment: 'id, tag, type, createdAt',
       logEntries: 'id, equipmentId, kind, timestamp',
+    });
+    // v2 — adds reports table (per-day review state). v1 tables re-listed unchanged.
+    this.version(2).stores({
+      equipment: 'id, tag, type, createdAt',
+      logEntries: 'id, equipmentId, kind, timestamp',
+      reports: 'date',
     });
   }
 }
