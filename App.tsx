@@ -7,6 +7,7 @@ import AssetPicker from './components/ui/AssetPicker';
 import EquipmentPack from './packs/equipment/EquipmentPack';
 import DosingPack from './packs/dosing/DosingPack';
 import HydraulicsPack from './packs/hydraulics/HydraulicsPack';
+import TroubleshootingPack from './packs/troubleshooting/TroubleshootingPack';
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.ASSETS, label: 'Assets' },
@@ -61,7 +62,7 @@ const AppInner: React.FC = () => {
         {activeTab === AppTab.ASSETS && <EquipmentPack />}
         {activeTab === AppTab.DOSING && <DosingPack />}
         {activeTab === AppTab.HYDRAULICS && <HydraulicsPack />}
-        {activeTab === AppTab.TROUBLESHOOTING && <div className="text-slate-400">Troubleshooting — Task 12</div>}
+        {activeTab === AppTab.TROUBLESHOOTING && <TroubleshootingPack />}
       </main>
 
       <footer className="bg-slate-50 border-t border-slate-200 py-6 px-4">

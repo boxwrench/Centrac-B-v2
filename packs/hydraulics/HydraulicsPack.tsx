@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/ui/InfoCard';
 import { vacuumDemand, dischargePerformance } from '../../engines/hydraulics';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';

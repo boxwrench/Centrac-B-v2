@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/ui/InfoCard';
 import { drawdownGph, dosingGph } from '../../engines/dosing';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
