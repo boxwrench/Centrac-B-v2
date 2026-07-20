@@ -172,46 +172,6 @@ export const TROUBLESHOOTING_MATRIX: TroubleshootingEntry[] = [
   }
 ];
 
-/**
- * Preventive-maintenance rounds, from the EPA routine O&M task list for drinking
- * water systems. Tasks tagged with assetTypes appear when a matching asset is
- * active; untagged tasks are facility-wide. Presented as one flat list (no cadence
- * grouping) split only by scope (facility vs. active asset).
- */
-export const PM_CHECKLIST: PmTask[] = [
-  // ---- Facility-wide ----
-  { id: 'pm-flow-meter', category: 'Readings', label: 'Check water flow meter readings.' },
-  { id: 'pm-chem-usage-other', category: 'Readings', label: 'Record daily chemical solution usage.' },
-  { id: 'pm-cl-analyzers', category: 'Instrumentation', label: 'Check and record chlorine residual analyzers.' },
-  { id: 'pm-instrument-io', category: 'Instrumentation', label: 'Check instrumentation for proper signal input/output.' },
-  { id: 'pm-security', category: 'Security', label: 'Complete a security check (locks, hatches, doors, windows, vents, lighting, alarms, fences, well caps/seals).' },
-  { id: 'pm-backup-power', category: 'Safety', label: 'Ensure backup power source is ready to operate when needed.' },
-  { id: 'pm-test-equipment', category: 'Instrumentation', label: 'Inspect chlorine and fluoride testing equipment.' },
-  { id: 'pm-clean-rooms', category: 'Housekeeping', label: 'Clean pump rooms and grounds.' },
-  { id: 'pm-plumbing-leaks', category: 'Housekeeping', label: 'Inspect all pump room plumbing for leaks.' },
-  { id: 'pm-control-panels', category: 'Controls', label: 'Inspect, clean, and repair control panels for pumps, valves, and filters.' },
-  { id: 'pm-safety-inventory', category: 'Safety', label: 'Inventory safety equipment and maintain repair logs.' },
-  { id: 'pm-heater', category: 'Building', label: 'Inspect heater operation.' },
-
-  // ---- Chemical / metering-pump system ----
-  { id: 'pm-feed-pump-inspect', category: 'Chemical Feed', label: 'Inspect chemical feed pumps for proper operation.', assetTypes: ['metering_pump'] },
-  { id: 'pm-feed-pump-catch', category: 'Chemical Feed', label: 'Perform a pump catch and calibrate chemical feed pumps.', assetTypes: ['metering_pump'], hint: 'Use the Dosing tab for the catch-column calc.' },
-  { id: 'pm-feed-lines-tanks', category: 'Chemical Feed', label: 'Inspect and clean chemical feed lines and solution tanks.', assetTypes: ['metering_pump', 'tank'] },
-  { id: 'pm-relief-valves', category: 'Valves', label: 'Check pressure relief valves and back pressure valves.', assetTypes: ['metering_pump', 'centrifugal_pump'], hint: 'The Checks tab flags low back pressure.' },
-
-  // ---- Tanks / storage ----
-  { id: 'pm-chem-tanks-usage', category: 'Tanks', label: 'Check chemical solution tanks and record amounts used (e.g., chlorine, fluoride).', assetTypes: ['tank'] },
-  { id: 'pm-storage-levels', category: 'Tanks', label: 'Check and record water levels in storage tanks (local and SCADA).', assetTypes: ['tank'] },
-  { id: 'pm-chem-levels', category: 'Tanks', label: 'Check and record chemical levels in chemical tanks (local and SCADA).', assetTypes: ['tank'] },
-
-  // ---- Booster / well pumps (centrifugal) ----
-  { id: 'pm-booster-inspect', category: 'Pumps', label: 'Inspect booster pump stations (vibration, heat, seals, controls).', assetTypes: ['centrifugal_pump'] },
-  { id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['centrifugal_pump'] },
-
-  // ---- Sump pumps ----
-  { id: 'pm-sump-check', category: 'Pumps', label: 'Check all sump pumps for proper operation.', assetTypes: ['sump_pump'] },
-];
-
 export const CONVERSION_FACTORS = {
   WATER_PSI_PER_FOOT: 0.433,
   API675_CONSTANT: 18500,
@@ -242,3 +202,79 @@ export const CONVERSION_FACTORS = {
   CATCH_TOLERANCE_PCT: 10,    // pump catch vs expected GPH
   MIN_DAYS_OF_SUPPLY: 7,      // chemical reorder warning threshold
 };
+
+/**
+ * Preventive-maintenance rounds, from the EPA routine O&M task list for drinking
+ * water systems. Tasks tagged with assetTypes appear when a matching asset is
+ * active; untagged tasks are facility-wide. Presented as one flat list (no cadence
+ * grouping) split only by scope (facility vs. active asset).
+ */
+export const PM_CHECKLIST: PmTask[] = [
+  // ---- Facility-wide ----
+  {
+    id: 'pm-flow-meter', category: 'Readings', label: 'Check water flow meter readings.',
+    fields: [
+      { id: 'meterReading', type: 'reading', label: 'Meter reading', unit: 'gal' },
+    ],
+  },
+  {
+    id: 'pm-chem-usage-other', category: 'Readings', label: 'Record daily chemical solution usage.',
+    fields: [
+      { id: 'amountUsed', type: 'reading', label: 'Amount used', unit: 'gal' },
+      { id: 'chemical', type: 'note', label: 'Chemical' },
+    ],
+  },
+  {
+    id: 'pm-cl-analyzers', category: 'Instrumentation', label: 'Check and record chlorine residual analyzers.',
+    fields: [
+      { id: 'analyzerMgL', type: 'reading', label: 'Analyzer residual', unit: 'mg/L', min: CONVERSION_FACTORS.MIN_CL_RESIDUAL_MGL, max: CONVERSION_FACTORS.MRDL_CL_MGL },
+      { id: 'grabMgL', type: 'reading', label: 'Grab sample residual', unit: 'mg/L', min: CONVERSION_FACTORS.MIN_CL_RESIDUAL_MGL, max: CONVERSION_FACTORS.MRDL_CL_MGL },
+    ],
+  },
+  { id: 'pm-instrument-io', category: 'Instrumentation', label: 'Check instrumentation for proper signal input/output.' },
+  { id: 'pm-security', category: 'Security', label: 'Complete a security check (locks, hatches, doors, windows, vents, lighting, alarms, fences, well caps/seals).' },
+  { id: 'pm-backup-power', category: 'Safety', label: 'Ensure backup power source is ready to operate when needed.' },
+  { id: 'pm-test-equipment', category: 'Instrumentation', label: 'Inspect chlorine and fluoride testing equipment.' },
+  { id: 'pm-clean-rooms', category: 'Housekeeping', label: 'Clean pump rooms and grounds.' },
+  { id: 'pm-plumbing-leaks', category: 'Housekeeping', label: 'Inspect all pump room plumbing for leaks.' },
+  { id: 'pm-control-panels', category: 'Controls', label: 'Inspect, clean, and repair control panels for pumps, valves, and filters.' },
+  { id: 'pm-safety-inventory', category: 'Safety', label: 'Inventory safety equipment and maintain repair logs.' },
+  { id: 'pm-heater', category: 'Building', label: 'Inspect heater operation.' },
+
+  // ---- Chemical / metering-pump system ----
+  { id: 'pm-feed-pump-inspect', category: 'Chemical Feed', label: 'Inspect chemical feed pumps for proper operation.', assetTypes: ['metering_pump'] },
+  { id: 'pm-feed-pump-catch', category: 'Chemical Feed', label: 'Perform a pump catch and calibrate chemical feed pumps.', assetTypes: ['metering_pump'], hint: 'Use the Dosing tab for the catch-column calc.' },
+  { id: 'pm-feed-lines-tanks', category: 'Chemical Feed', label: 'Inspect and clean chemical feed lines and solution tanks.', assetTypes: ['metering_pump', 'tank'] },
+  { id: 'pm-relief-valves', category: 'Valves', label: 'Check pressure relief valves and back pressure valves.', assetTypes: ['metering_pump', 'centrifugal_pump'], hint: 'The Checks tab flags low back pressure.' },
+
+  // ---- Tanks / storage ----
+  {
+    id: 'pm-chem-tanks-usage', category: 'Tanks', label: 'Check chemical solution tanks and record amounts used (e.g., chlorine, fluoride).', assetTypes: ['tank'],
+    fields: [
+      { id: 'levelGal', type: 'reading', label: 'Tank level', unit: 'gal' },
+      { id: 'addedGal', type: 'reading', label: 'Amount added', unit: 'gal', placeholder: '0 if none' },
+      { id: 'chemical', type: 'note', label: 'Chemical' },
+    ],
+  },
+  {
+    id: 'pm-storage-levels', category: 'Tanks', label: 'Check and record water levels in storage tanks (local and SCADA).', assetTypes: ['tank'],
+    fields: [
+      { id: 'levelFt', type: 'reading', label: 'Water level', unit: 'ft' },
+      { id: 'source', type: 'select', label: 'Reading source', options: ['local', 'SCADA', 'both'] },
+    ],
+  },
+  {
+    id: 'pm-chem-levels', category: 'Tanks', label: 'Check and record chemical levels in chemical tanks (local and SCADA).', assetTypes: ['tank'],
+    fields: [
+      { id: 'levelGal', type: 'reading', label: 'Chemical level', unit: 'gal' },
+      { id: 'source', type: 'select', label: 'Reading source', options: ['local', 'SCADA', 'both'] },
+    ],
+  },
+
+  // ---- Booster / well pumps (centrifugal) ----
+  { id: 'pm-booster-inspect', category: 'Pumps', label: 'Inspect booster pump stations (vibration, heat, seals, controls).', assetTypes: ['centrifugal_pump'] },
+  { id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['centrifugal_pump'] },
+
+  // ---- Sump pumps ----
+  { id: 'pm-sump-check', category: 'Pumps', label: 'Check all sump pumps for proper operation.', assetTypes: ['sump_pump'] },
+];
