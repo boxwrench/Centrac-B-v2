@@ -21,4 +21,11 @@ export const logRepo = {
   async remove(id: string): Promise<void> {
     await db.logEntries.delete(id);
   },
+
+  async lastMaintenanceByTask(taskId: string, equipmentId: string | null): Promise<LogEntry | undefined> {
+    const all = await this.listAll();
+    return all.find(
+      (e) => e.kind === 'maintenance' && e.inputs.taskId === taskId && e.equipmentId === equipmentId
+    );
+  },
 };

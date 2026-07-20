@@ -34,4 +34,55 @@ describe('logRepo', () => {
     const list = await logRepo.listByEquipment(null);
     expect(list.map((e) => e.id)).toEqual([u.id]);
   });
+
+  describe('lastMaintenanceByTask', () => {
+    it('returns the newest of two entries for the same taskId', async () => {
+      const a = await logRepo.add({
+        equipmentId: 'eq-1',
+        kind: 'maintenance',
+        inputs: { taskId: 'pm-x' },
+        outputs: {},
+      });
+      await new Promise((r) => setTimeout(r, 5));
+      const b = await logRepo.add({
+        equipmentId: 'eq-1',
+        kind: 'maintenance',
+        inputs: { taskId: 'pm-x' },
+        outputs: {},
+      });
+      const result = await logRepo.lastMaintenanceByTask('pm-x', 'eq-1');
+      expect(result?.id).toBe(b.id);
+      expect(a.id).not.toBe(b.id);
+    });
+
+    it('returns undefined for an unknown taskId', async () => {
+      await logRepo.add({
+        equipmentId: 'eq-1',
+        kind: 'maintenance',
+        inputs: { taskId: 'pm-x' },
+        outputs: {},
+      });
+      const result = await logRepo.lastMaintenanceByTask('pm-unknown', 'eq-1');
+      expect(result).toBeUndefined();
+    });
+
+    it('scopes by equipmentId', async () => {
+      await logRepo.add({
+        equipmentId: 'eq-1',
+        kind: 'maintenance',
+        inputs: { taskId: 'pm-x' },
+        outputs: {},
+      });
+      const facility = await logRepo.add({
+        equipmentId: null,
+        kind: 'maintenance',
+        inputs: { taskId: 'pm-x' },
+        outputs: {},
+      });
+      const nullResult = await logRepo.lastMaintenanceByTask('pm-x', null);
+      expect(nullResult?.id).toBe(facility.id);
+      const eqResult = await logRepo.lastMaintenanceByTask('pm-x', 'eq-2');
+      expect(eqResult).toBeUndefined();
+    });
+  });
 });
