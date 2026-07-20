@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { equipmentRepo } from '../../db/equipmentRepo';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
-import { Equipment, EquipmentType, LogEntry } from '../../types';
+import { Equipment, EquipmentType, EQUIPMENT_TYPES, EQUIPMENT_TYPE_LABELS, LogEntry } from '../../types';
 
-const TYPES: EquipmentType[] = ['metering_pump', 'tank', 'other'];
+const TYPES: EquipmentType[] = EQUIPMENT_TYPES;
 
 const EquipmentPack: React.FC = () => {
   const { equipment, refreshEquipment, activeAssetId, setActiveAssetId } = useActiveAsset();
@@ -49,7 +49,7 @@ const EquipmentPack: React.FC = () => {
             <label className="text-xs font-semibold text-slate-500 uppercase">Type</label>
             <select value={type} onChange={(e) => setType(e.target.value as EquipmentType)}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none bg-white">
-              {TYPES.map((t) => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
+              {TYPES.map((t) => <option key={t} value={t}>{EQUIPMENT_TYPE_LABELS[t]}</option>)}
             </select>
           </div>
           <div className="space-y-1">
@@ -82,7 +82,7 @@ const EquipmentPack: React.FC = () => {
                 }`}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-slate-800">{eq.tag}</span>
-                  <span className="text-xs uppercase text-slate-400">{eq.type.replace('_', ' ')}</span>
+                  <span className="text-xs uppercase text-slate-400">{EQUIPMENT_TYPE_LABELS[eq.type]}</span>
                 </div>
                 {(eq.make || eq.model) && (
                   <p className="text-xs text-slate-500">{[eq.make, eq.model].filter(Boolean).join(' · ')}</p>

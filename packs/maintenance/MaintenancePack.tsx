@@ -1,0 +1,150 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { PM_CHECKLIST } from '../../constants';
+import { LogEntry, PmTask, EQUIPMENT_TYPE_LABELS } from '../../types';
+import { logRepo } from '../../db/logRepo';
+import { useActiveAsset } from '../../state/ActiveAssetContext';
+
+const startOfToday = (): number => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+};
+
+const FACILITY_KEY = 'facility';
+const taskIdOf = (e: LogEntry): string | undefined =>
+  (e.inputs as { taskId?: string } | undefined)?.taskId;
+
+const MaintenancePack: React.FC = () => {
+  const { activeAsset, activeAssetId, refreshEquipment } = useActiveAsset();
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+
+  const loadLogs = useCallback(async () => {
+    const all = await logRepo.listAll();
+    setLogs(all.filter((e) => e.kind === 'maintenance'));
+  }, []);
+
+  useEffect(() => {
+    void loadLogs();
+  }, [loadLogs]);
+
+  // Facility tasks (no assetTypes) always show; asset tasks show for the active asset's type.
+  const facilityTasks = useMemo(() => PM_CHECKLIST.filter((t) => !t.assetTypes || t.assetTypes.length === 0), []);
+  const assetTasks = useMemo(
+    () =>
+      activeAsset
+        ? PM_CHECKLIST.filter((t) => t.assetTypes && t.assetTypes.includes(activeAsset.type))
+        : [],
+    [activeAsset],
+  );
+
+  // Map of "<scope>::<taskId>" -> today's log entry, so we can show done-state and undo it.
+  const doneToday = useMemo(() => {
+    const today = startOfToday();
+    const map = new Map<string, LogEntry>();
+    for (const e of logs) {
+      if (e.timestamp < today) continue;
+      const tid = taskIdOf(e);
+      if (!tid) continue;
+      const scope = e.equipmentId ?? FACILITY_KEY;
+      map.set(`${scope}::${tid}`, e);
+    }
+    return map;
+  }, [logs]);
+
+  const keyFor = (task: PmTask): string =>
+    `${task.assetTypes && task.assetTypes.length ? activeAssetId ?? FACILITY_KEY : FACILITY_KEY}::${task.id}`;
+
+  const toggle = async (task: PmTask) => {
+    const scopeId = task.assetTypes && task.assetTypes.length ? activeAssetId : null;
+    const existing = doneToday.get(keyFor(task));
+    if (existing) {
+      await logRepo.remove(existing.id);
+    } else {
+      await logRepo.add({
+        equipmentId: scopeId,
+        kind: 'maintenance',
+        inputs: { taskId: task.id, label: task.label },
+        outputs: { done: true, date: new Date().toISOString().slice(0, 10) },
+      });
+    }
+    await loadLogs();
+    await refreshEquipment(); // keep the asset's History view in sync
+  };
+
+  const totalVisible = facilityTasks.length + assetTasks.length;
+  const doneVisible =
+    facilityTasks.filter((t) => doneToday.has(keyFor(t))).length +
+    assetTasks.filter((t) => doneToday.has(keyFor(t))).length;
+
+  const renderRow = (task: PmTask) => {
+    const checked = doneToday.has(keyFor(task));
+    return (
+      <button
+        key={task.id}
+        onClick={() => toggle(task)}
+        className={`w-full text-left flex items-start gap-3 p-3 rounded-xl border transition-all ${
+          checked ? 'border-green-400 bg-green-50' : 'border-slate-200 hover:bg-slate-50'
+        }`}
+      >
+        <span
+          className={`mt-0.5 h-5 w-5 flex-shrink-0 rounded border flex items-center justify-center text-xs font-bold ${
+            checked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-transparent'
+          }`}
+        >
+          ✓
+        </span>
+        <span className="min-w-0">
+          <span className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+          </span>
+          <span className={`block text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
+            {task.label}
+          </span>
+          {task.hint && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
+        </span>
+      </button>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-slate-800">Preventive Maintenance Rounds</h3>
+          <p className="text-sm text-slate-500">
+            EPA routine O&amp;M checklist. Completed items are logged to history for the day.
+            {!activeAsset && ' Select an asset to add its equipment-specific tasks.'}
+          </p>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold font-mono text-slate-800">
+            {doneVisible}/{totalVisible}
+          </div>
+          <div className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Done today</div>
+        </div>
+      </div>
+
+      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">Facility</h4>
+        <div className="space-y-2">{facilityTasks.map(renderRow)}</div>
+      </section>
+
+      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+          {activeAsset ? `${activeAsset.tag} · ${EQUIPMENT_TYPE_LABELS[activeAsset.type]}` : 'Asset tasks'}
+        </h4>
+        {!activeAsset ? (
+          <p className="text-slate-400 text-sm">Select an asset above to see equipment-specific PM tasks.</p>
+        ) : assetTasks.length === 0 ? (
+          <p className="text-slate-400 text-sm">
+            No equipment-specific PM tasks defined for {EQUIPMENT_TYPE_LABELS[activeAsset.type]}.
+          </p>
+        ) : (
+          <div className="space-y-2">{assetTasks.map(renderRow)}</div>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default MaintenancePack;

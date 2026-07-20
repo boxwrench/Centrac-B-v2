@@ -3,7 +3,18 @@ export enum AppTab {
   ASSETS = 'assets',
   DOSING = 'dosing',
   HYDRAULICS = 'hydraulics',
+  MAINTENANCE = 'maintenance',
   TROUBLESHOOTING = 'troubleshooting',
+}
+
+export interface PmTask {
+  id: string;
+  label: string;
+  category: string;
+  // Asset types this task applies to. Omitted/empty = facility-wide (not tied to one asset).
+  assetTypes?: EquipmentType[];
+  // Optional operator hint, e.g. which tab supports the task.
+  hint?: string;
 }
 
 export interface TroubleshootingEntry {
@@ -11,6 +22,8 @@ export interface TroubleshootingEntry {
   category: string;
   cause: string;
   recommendation: string;
+  // Which asset types this symptom applies to. Omitted = applies to all assets.
+  assetTypes?: EquipmentType[];
 }
 
 export interface CalculationResult {
@@ -20,7 +33,32 @@ export interface CalculationResult {
   message?: string;
 }
 
-export type EquipmentType = 'metering_pump' | 'tank' | 'other';
+export type EquipmentType =
+  | 'metering_pump'
+  | 'centrifugal_pump'
+  | 'sump_pump'
+  | 'tank'
+  | 'basin'
+  | 'other';
+
+// Human-readable labels for each equipment type (single source of truth for UI).
+export const EQUIPMENT_TYPE_LABELS: Record<EquipmentType, string> = {
+  metering_pump: 'Metering Pump',
+  centrifugal_pump: 'Centrifugal Pump',
+  sump_pump: 'Sump Pump',
+  tank: 'Tank',
+  basin: 'Basin',
+  other: 'Other',
+};
+
+export const EQUIPMENT_TYPES: EquipmentType[] = [
+  'metering_pump',
+  'centrifugal_pump',
+  'sump_pump',
+  'tank',
+  'basin',
+  'other',
+];
 
 export interface Equipment {
   id: string;
@@ -33,7 +71,7 @@ export interface Equipment {
   createdAt: number;
 }
 
-export type LogKind = 'dosing' | 'hydraulics' | 'troubleshoot';
+export type LogKind = 'dosing' | 'hydraulics' | 'troubleshoot' | 'maintenance';
 
 export interface LogEntry {
   id: string;

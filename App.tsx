@@ -7,12 +7,14 @@ import AssetPicker from './components/ui/AssetPicker';
 import EquipmentPack from './packs/equipment/EquipmentPack';
 import DosingPack from './packs/dosing/DosingPack';
 import HydraulicsPack from './packs/hydraulics/HydraulicsPack';
+import MaintenancePack from './packs/maintenance/MaintenancePack';
 import TroubleshootingPack from './packs/troubleshooting/TroubleshootingPack';
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.ASSETS, label: 'Assets' },
   { id: AppTab.DOSING, label: 'Dosing' },
-  { id: AppTab.HYDRAULICS, label: 'Hydraulics' },
+  { id: AppTab.HYDRAULICS, label: 'Checks' },
+  { id: AppTab.MAINTENANCE, label: 'Maintenance' },
   { id: AppTab.TROUBLESHOOTING, label: 'Troubleshooting' },
 ];
 
@@ -62,6 +64,7 @@ const AppInner: React.FC = () => {
         {activeTab === AppTab.ASSETS && <EquipmentPack />}
         {activeTab === AppTab.DOSING && <DosingPack />}
         {activeTab === AppTab.HYDRAULICS && <HydraulicsPack />}
+        {activeTab === AppTab.MAINTENANCE && <MaintenancePack />}
         {activeTab === AppTab.TROUBLESHOOTING && <TroubleshootingPack />}
       </main>
 

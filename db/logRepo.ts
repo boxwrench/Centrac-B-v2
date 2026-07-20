@@ -17,4 +17,8 @@ export const logRepo = {
     const all = await this.listAll();
     return all.filter((e) => e.equipmentId === equipmentId);
   },
+
+  async remove(id: string): Promise<void> {
+    await db.logEntries.delete(id);
+  },
 };
