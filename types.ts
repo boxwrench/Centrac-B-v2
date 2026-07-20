@@ -1,9 +1,9 @@
 
 export enum AppTab {
-  SUCTION = 'suction',
-  DISCHARGE = 'discharge',
-  CALIBRATION = 'calibration',
-  TROUBLESHOOTING = 'troubleshooting'
+  ASSETS = 'assets',
+  DOSING = 'dosing',
+  HYDRAULICS = 'hydraulics',
+  TROUBLESHOOTING = 'troubleshooting',
 }
 
 export interface TroubleshootingEntry {
@@ -16,6 +16,31 @@ export interface TroubleshootingEntry {
 export interface CalculationResult {
   value: number;
   unit: string;
-  status?: 'pass' | 'fail' | 'warning';
+  status?: 'pass' | 'fail' | 'warning' | 'neutral';
   message?: string;
+}
+
+export type EquipmentType = 'metering_pump' | 'tank' | 'other';
+
+export interface Equipment {
+  id: string;
+  tag: string;
+  type: EquipmentType;
+  make?: string;
+  model?: string;
+  nameplate?: Record<string, string>;
+  location?: string;
+  createdAt: number;
+}
+
+export type LogKind = 'dosing' | 'hydraulics' | 'troubleshoot';
+
+export interface LogEntry {
+  id: string;
+  equipmentId: string | null;
+  kind: LogKind;
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
+  note?: string;
+  timestamp: number;
 }
