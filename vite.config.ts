@@ -15,6 +15,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['icon.svg'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
+      },
       manifest: {
         name: 'Centrac B Field Operator',
         short_name: 'Centrac B',
