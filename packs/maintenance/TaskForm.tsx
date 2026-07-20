@@ -61,7 +61,9 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
 }) => {
   const fields = useMemo(() => task.fields ?? [], [task.fields]);
   const [values, setValues] = useState<Record<string, FieldValue>>(() => defaultValues(fields));
-  const [last, setLast] = useState<{ values: Record<string, unknown>; date?: string } | undefined>(undefined);
+  const [last, setLast] = useState<{ values: Record<string, unknown>; date?: string; timestamp: number } | undefined>(
+    undefined,
+  );
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
       if (cancelled || !entry) return;
       const inputs = entry.inputs as { values?: Record<string, unknown> } | undefined;
       const outputs = entry.outputs as { date?: string } | undefined;
-      if (inputs?.values) setLast({ values: inputs.values, date: outputs?.date });
+      if (inputs?.values) setLast({ values: inputs.values, date: outputs?.date, timestamp: entry.timestamp });
     });
     return () => {
       cancelled = true;
@@ -105,7 +107,12 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
       if (typeof current === 'number' && Number.isFinite(current) && typeof prev === 'number' && Number.isFinite(prev)) {
         const addedNum = typeof added === 'number' && Number.isFinite(added) ? added : 0;
         const usage = usageSince(prev, current, addedNum);
-        const dos = daysOfSupply(current, usage);
+        // daysOfSupply expects an average DAILY rate, not total usage since the last
+        // reading — convert using the elapsed time since that reading (floor 1 day to
+        // avoid inflating the rate on a same-day recheck).
+        const daysElapsed = last ? Math.max(1, (Date.now() - last.timestamp) / 86_400_000) : 1;
+        const dailyRate = usage / daysElapsed;
+        const dos = daysOfSupply(current, dailyRate);
         const dosStatus: Status = dos < CONVERSION_FACTORS.MIN_DAYS_OF_SUPPLY ? 'warning' : 'pass';
         cards.push(
           <InfoCard key="usage" title="Usage Since Last" value={Number(usage.toFixed(2))} unit="gal" status="neutral" />,
