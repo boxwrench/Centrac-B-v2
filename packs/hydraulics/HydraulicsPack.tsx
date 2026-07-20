@@ -5,6 +5,7 @@ import MeteringChecks from './MeteringChecks';
 import CentrifugalChecks from './CentrifugalChecks';
 import SumpChecks from './SumpChecks';
 import BasinChecks from './BasinChecks';
+import WellChecks from './WellChecks';
 
 /**
  * Asset-aware checks tab. The calculators shown adapt to the type of the active
@@ -34,6 +35,9 @@ const HydraulicsPack: React.FC = () => {
       break;
     case 'sump_pump':
       panel = <SumpChecks />;
+      break;
+    case 'well_pump':
+      panel = <WellChecks />;
       break;
     case 'basin':
     case 'tank':

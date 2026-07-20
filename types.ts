@@ -55,6 +55,7 @@ export type EquipmentType =
   | 'metering_pump'
   | 'centrifugal_pump'
   | 'sump_pump'
+  | 'well_pump'
   | 'tank'
   | 'basin'
   | 'other';
@@ -64,6 +65,7 @@ export const EQUIPMENT_TYPE_LABELS: Record<EquipmentType, string> = {
   metering_pump: 'Metering Pump',
   centrifugal_pump: 'Centrifugal Pump',
   sump_pump: 'Sump Pump',
+  well_pump: 'Well Pump',
   tank: 'Tank',
   basin: 'Basin',
   other: 'Other',
@@ -73,6 +75,7 @@ export const EQUIPMENT_TYPES: EquipmentType[] = [
   'metering_pump',
   'centrifugal_pump',
   'sump_pump',
+  'well_pump',
   'tank',
   'basin',
   'other',

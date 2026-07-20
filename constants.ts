@@ -368,7 +368,7 @@ export const PM_CHECKLIST: PmTask[] = [
     ],
   },
   {
-    id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['centrifugal_pump'],
+    id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['well_pump'],
     fields: [
       { id: 'amps', type: 'reading', label: 'Amps', unit: 'A' },
       { id: 'pumpingRate', type: 'reading', label: 'Pumping rate', unit: 'gpm' },
