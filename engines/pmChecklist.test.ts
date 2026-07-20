@@ -9,6 +9,21 @@ const RECORD_TASK_FIELD_IDS: Record<string, string[]> = {
   'pm-storage-levels': ['levelFt', 'source'],
   'pm-chem-levels': ['levelGal', 'source'],
   'pm-cl-analyzers': ['analyzerMgL', 'grabMgL'],
+  'pm-feed-pump-catch': ['mL', 'sec', 'expectedGph'],
+  'pm-backup-power': ['started', 'transfer', 'runHours', 'fuelPct'],
+  'pm-relief-valves': ['setPressure', 'valveTag'],
+  'pm-well-pump-inspect': ['amps', 'pumpingRate', 'waterLevelFt', 'sealsIntact', 'noUnusualNoise'],
+  'pm-feed-pump-inspect': ['noLeaks', 'primeHolds', 'outputSteady', 'note'],
+  'pm-booster-inspect': ['vibrationNormal', 'tempNormal', 'sealsDry', 'controlsRespond', 'note'],
+  'pm-instrument-io': ['signalsVerified', 'instrumentsChecked'],
+  'pm-security': ['locks', 'hatches', 'doorsWindows', 'ventsScreens', 'lighting', 'alarms', 'fencing', 'wellCaps'],
+  'pm-test-equipment': ['reagentsInDate', 'standardsPass', 'note'],
+  'pm-plumbing-leaks': ['noLeaksFound', 'leakLocation'],
+  'pm-sump-check': ['floatTestPass', 'pumpRuns', 'note'],
+  'pm-feed-lines-tanks': ['linesClear', 'tanksClean', 'note'],
+  'pm-control-panels': ['panelsClean', 'indicatorsWork', 'note'],
+  'pm-safety-inventory': ['inventoryComplete', 'itemsNeeded'],
+  'pm-heater': ['heaterRuns'],
 };
 
 describe('PM_CHECKLIST integrity', () => {
@@ -59,6 +74,12 @@ describe('PM_CHECKLIST integrity', () => {
         }
       }
     }
+  });
+
+  it('pm-clean-rooms has no fields (stays one-tap)', () => {
+    const task = PM_CHECKLIST.find((t) => t.id === 'pm-clean-rooms');
+    expect(task, 'task pm-clean-rooms not found').toBeDefined();
+    expect(task!.fields ?? []).toEqual([]);
   });
 
   it('every reading field has a unit', () => {

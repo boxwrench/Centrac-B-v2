@@ -231,21 +231,106 @@ export const PM_CHECKLIST: PmTask[] = [
       { id: 'grabMgL', type: 'reading', label: 'Grab sample residual', unit: 'mg/L', min: CONVERSION_FACTORS.MIN_CL_RESIDUAL_MGL, max: CONVERSION_FACTORS.MRDL_CL_MGL },
     ],
   },
-  { id: 'pm-instrument-io', category: 'Instrumentation', label: 'Check instrumentation for proper signal input/output.' },
-  { id: 'pm-security', category: 'Security', label: 'Complete a security check (locks, hatches, doors, windows, vents, lighting, alarms, fences, well caps/seals).' },
-  { id: 'pm-backup-power', category: 'Safety', label: 'Ensure backup power source is ready to operate when needed.' },
-  { id: 'pm-test-equipment', category: 'Instrumentation', label: 'Inspect chlorine and fluoride testing equipment.' },
+  {
+    id: 'pm-instrument-io', category: 'Instrumentation', label: 'Check instrumentation for proper signal input/output.',
+    fields: [
+      { id: 'signalsVerified', type: 'checkitem', label: 'Signals verified' },
+      { id: 'instrumentsChecked', type: 'note', label: 'Instruments checked' },
+    ],
+  },
+  {
+    id: 'pm-security', category: 'Security', label: 'Complete a security check (locks, hatches, doors, windows, vents, lighting, alarms, fences, well caps/seals).',
+    fields: [
+      { id: 'locks', type: 'checkitem', label: 'Locks' },
+      { id: 'hatches', type: 'checkitem', label: 'Hatches' },
+      { id: 'doorsWindows', type: 'checkitem', label: 'Doors and windows' },
+      { id: 'ventsScreens', type: 'checkitem', label: 'Vents and screens' },
+      { id: 'lighting', type: 'checkitem', label: 'Lighting' },
+      { id: 'alarms', type: 'checkitem', label: 'Alarms' },
+      { id: 'fencing', type: 'checkitem', label: 'Fencing' },
+      { id: 'wellCaps', type: 'checkitem', label: 'Well caps / seals' },
+    ],
+  },
+  {
+    id: 'pm-backup-power', category: 'Safety', label: 'Ensure backup power source is ready to operate when needed.',
+    fields: [
+      { id: 'started', type: 'checkitem', label: 'Started' },
+      { id: 'transfer', type: 'select', label: 'Transfer switch', options: ['auto-transfer OK', 'manual only', 'failed'] },
+      { id: 'runHours', type: 'reading', label: 'Run hours', unit: 'hr' },
+      { id: 'fuelPct', type: 'reading', label: 'Fuel', unit: '%', min: 25 },
+    ],
+  },
+  {
+    id: 'pm-test-equipment', category: 'Instrumentation', label: 'Inspect chlorine and fluoride testing equipment.',
+    fields: [
+      { id: 'reagentsInDate', type: 'checkitem', label: 'Reagents in date' },
+      { id: 'standardsPass', type: 'checkitem', label: 'Standards pass' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
   { id: 'pm-clean-rooms', category: 'Housekeeping', label: 'Clean pump rooms and grounds.' },
-  { id: 'pm-plumbing-leaks', category: 'Housekeeping', label: 'Inspect all pump room plumbing for leaks.' },
-  { id: 'pm-control-panels', category: 'Controls', label: 'Inspect, clean, and repair control panels for pumps, valves, and filters.' },
-  { id: 'pm-safety-inventory', category: 'Safety', label: 'Inventory safety equipment and maintain repair logs.' },
-  { id: 'pm-heater', category: 'Building', label: 'Inspect heater operation.' },
+  {
+    id: 'pm-plumbing-leaks', category: 'Housekeeping', label: 'Inspect all pump room plumbing for leaks.',
+    fields: [
+      { id: 'noLeaksFound', type: 'checkitem', label: 'No leaks found' },
+      { id: 'leakLocation', type: 'note', label: 'Leak location' },
+    ],
+  },
+  {
+    id: 'pm-control-panels', category: 'Controls', label: 'Inspect, clean, and repair control panels for pumps, valves, and filters.',
+    fields: [
+      { id: 'panelsClean', type: 'checkitem', label: 'Panels clean' },
+      { id: 'indicatorsWork', type: 'checkitem', label: 'Indicators work' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
+  {
+    id: 'pm-safety-inventory', category: 'Safety', label: 'Inventory safety equipment and maintain repair logs.',
+    fields: [
+      { id: 'inventoryComplete', type: 'checkitem', label: 'Inventory complete' },
+      { id: 'itemsNeeded', type: 'note', label: 'Items needed' },
+    ],
+  },
+  {
+    id: 'pm-heater', category: 'Building', label: 'Inspect heater operation.',
+    fields: [
+      { id: 'heaterRuns', type: 'checkitem', label: 'Heater runs' },
+    ],
+  },
 
   // ---- Chemical / metering-pump system ----
-  { id: 'pm-feed-pump-inspect', category: 'Chemical Feed', label: 'Inspect chemical feed pumps for proper operation.', assetTypes: ['metering_pump'] },
-  { id: 'pm-feed-pump-catch', category: 'Chemical Feed', label: 'Perform a pump catch and calibrate chemical feed pumps.', assetTypes: ['metering_pump'], hint: 'Use the Dosing tab for the catch-column calc.' },
-  { id: 'pm-feed-lines-tanks', category: 'Chemical Feed', label: 'Inspect and clean chemical feed lines and solution tanks.', assetTypes: ['metering_pump', 'tank'] },
-  { id: 'pm-relief-valves', category: 'Valves', label: 'Check pressure relief valves and back pressure valves.', assetTypes: ['metering_pump', 'centrifugal_pump'], hint: 'The Checks tab flags low back pressure.' },
+  {
+    id: 'pm-feed-pump-inspect', category: 'Chemical Feed', label: 'Inspect chemical feed pumps for proper operation.', assetTypes: ['metering_pump'],
+    fields: [
+      { id: 'noLeaks', type: 'checkitem', label: 'No leaks' },
+      { id: 'primeHolds', type: 'checkitem', label: 'Prime holds' },
+      { id: 'outputSteady', type: 'checkitem', label: 'Output steady' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
+  {
+    id: 'pm-feed-pump-catch', category: 'Chemical Feed', label: 'Perform a pump catch and calibrate chemical feed pumps.', assetTypes: ['metering_pump'], hint: 'Use the Dosing tab for the catch-column calc.',
+    fields: [
+      { id: 'mL', type: 'reading', label: 'Catch volume', unit: 'mL' },
+      { id: 'sec', type: 'reading', label: 'Catch time', unit: 'sec' },
+      { id: 'expectedGph', type: 'reading', label: 'Expected rate', unit: 'GPH', placeholder: 'from dosing calc' },
+    ],
+  },
+  {
+    id: 'pm-feed-lines-tanks', category: 'Chemical Feed', label: 'Inspect and clean chemical feed lines and solution tanks.', assetTypes: ['metering_pump', 'tank'],
+    fields: [
+      { id: 'linesClear', type: 'checkitem', label: 'Lines clear' },
+      { id: 'tanksClean', type: 'checkitem', label: 'Tanks clean' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
+  {
+    id: 'pm-relief-valves', category: 'Valves', label: 'Check pressure relief valves and back pressure valves.', assetTypes: ['metering_pump', 'centrifugal_pump'], hint: 'The Checks tab flags low back pressure.',
+    fields: [
+      { id: 'setPressure', type: 'reading', label: 'Set pressure', unit: 'PSI' },
+      { id: 'valveTag', type: 'note', label: 'Valve tag' },
+    ],
+  },
 
   // ---- Tanks / storage ----
   {
@@ -272,9 +357,34 @@ export const PM_CHECKLIST: PmTask[] = [
   },
 
   // ---- Booster / well pumps (centrifugal) ----
-  { id: 'pm-booster-inspect', category: 'Pumps', label: 'Inspect booster pump stations (vibration, heat, seals, controls).', assetTypes: ['centrifugal_pump'] },
-  { id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['centrifugal_pump'] },
+  {
+    id: 'pm-booster-inspect', category: 'Pumps', label: 'Inspect booster pump stations (vibration, heat, seals, controls).', assetTypes: ['centrifugal_pump'],
+    fields: [
+      { id: 'vibrationNormal', type: 'checkitem', label: 'Vibration normal' },
+      { id: 'tempNormal', type: 'checkitem', label: 'Temperature normal' },
+      { id: 'sealsDry', type: 'checkitem', label: 'Seals dry' },
+      { id: 'controlsRespond', type: 'checkitem', label: 'Controls respond' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
+  {
+    id: 'pm-well-pump-inspect', category: 'Pumps', label: 'Inspect well pumps, motors, and controls for defects, unusual sounds/vibrations, and intact seals.', assetTypes: ['centrifugal_pump'],
+    fields: [
+      { id: 'amps', type: 'reading', label: 'Amps', unit: 'A' },
+      { id: 'pumpingRate', type: 'reading', label: 'Pumping rate', unit: 'gpm' },
+      { id: 'waterLevelFt', type: 'reading', label: 'Water level', unit: 'ft' },
+      { id: 'sealsIntact', type: 'checkitem', label: 'Seals intact' },
+      { id: 'noUnusualNoise', type: 'checkitem', label: 'No unusual noise' },
+    ],
+  },
 
   // ---- Sump pumps ----
-  { id: 'pm-sump-check', category: 'Pumps', label: 'Check all sump pumps for proper operation.', assetTypes: ['sump_pump'] },
+  {
+    id: 'pm-sump-check', category: 'Pumps', label: 'Check all sump pumps for proper operation.', assetTypes: ['sump_pump'],
+    fields: [
+      { id: 'floatTestPass', type: 'checkitem', label: 'Float test pass' },
+      { id: 'pumpRuns', type: 'checkitem', label: 'Pump runs' },
+      { id: 'note', type: 'note', label: 'Note' },
+    ],
+  },
 ];

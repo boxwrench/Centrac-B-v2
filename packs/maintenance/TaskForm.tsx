@@ -2,11 +2,54 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { PmField, PmTask } from '../../types';
 import { CONVERSION_FACTORS } from '../../constants';
 import { logRepo } from '../../db/logRepo';
-import { readingStatus, worstStatus, usageSince, daysOfSupply, analyzerDrift } from '../../engines/rounds';
+import { readingStatus, worstStatus, usageSince, daysOfSupply, analyzerDrift, catchVerdict, specificCapacity } from '../../engines/rounds';
+import { drawdownGph } from '../../engines/dosing';
 import InfoCard from '../../components/ui/InfoCard';
 
 type Status = 'pass' | 'fail' | 'warning' | 'neutral';
 type FieldValue = number | string | boolean;
+
+/**
+ * Values derived from a task's fields that are not directly entered but computed
+ * (e.g. the pump-catch verdict, specific capacity). Shared by the InfoCard render
+ * path and the save path so the two can't drift apart.
+ */
+const deriveExtraReadings = (
+  taskId: string,
+  values: Record<string, FieldValue>,
+): Record<string, { value: number; status: Status }> => {
+  const out: Record<string, { value: number; status: Status }> = {};
+
+  if (taskId === 'pm-feed-pump-catch') {
+    const mL = values.mL;
+    const sec = values.sec;
+    const expectedGph = values.expectedGph;
+    if (
+      typeof mL === 'number' && Number.isFinite(mL) &&
+      typeof sec === 'number' && Number.isFinite(sec) &&
+      typeof expectedGph === 'number' && Number.isFinite(expectedGph)
+    ) {
+      const actual = drawdownGph(mL, sec);
+      const verdict = catchVerdict(actual, expectedGph);
+      out.drawdownGph = { value: actual, status: 'neutral' };
+      out.catchVerdict = { value: verdict.value, status: verdict.status };
+    }
+  }
+
+  if (taskId === 'pm-well-pump-inspect') {
+    const rate = values.pumpingRate;
+    const waterLevelFt = values.waterLevelFt;
+    if (
+      typeof rate === 'number' && Number.isFinite(rate) &&
+      typeof waterLevelFt === 'number' && Number.isFinite(waterLevelFt)
+    ) {
+      const sc = specificCapacity(rate, waterLevelFt);
+      out.specificCapacity = { value: sc, status: 'neutral' };
+    }
+  }
+
+  return out;
+};
 
 const statusChipClasses: Record<Status, string> = {
   pass: 'bg-green-100 text-green-800',
@@ -145,6 +188,39 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
       }
     }
 
+    const extra = deriveExtraReadings(task.id, values);
+    if (task.id === 'pm-feed-pump-catch' && extra.drawdownGph && extra.catchVerdict) {
+      cards.push(
+        <InfoCard
+          key="drawdownGph"
+          title="Actual Rate"
+          value={extra.drawdownGph.value.toFixed(2)}
+          unit="GPH"
+          status="neutral"
+        />,
+      );
+      cards.push(
+        <InfoCard
+          key="catchVerdict"
+          title="Catch Verdict"
+          value={extra.catchVerdict.value.toFixed(2)}
+          unit="% error"
+          status={extra.catchVerdict.status}
+        />,
+      );
+    }
+    if (task.id === 'pm-well-pump-inspect' && extra.specificCapacity) {
+      cards.push(
+        <InfoCard
+          key="specificCapacity"
+          title="Specific Capacity"
+          value={extra.specificCapacity.value.toFixed(2)}
+          unit="gpm/ft"
+          status="neutral"
+        />,
+      );
+    }
+
     return cards;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task.id, values, last]);
@@ -175,6 +251,13 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           statuses.push(status);
         }
       }
+
+      const extra = deriveExtraReadings(task.id, values);
+      for (const [id, r] of Object.entries(extra)) {
+        readings[id] = r;
+        statuses.push(r.status);
+      }
+
       await logRepo.add({
         equipmentId: scopeEquipmentId,
         kind: 'maintenance',
