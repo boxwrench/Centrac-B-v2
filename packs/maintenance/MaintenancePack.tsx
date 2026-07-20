@@ -3,6 +3,7 @@ import { PM_CHECKLIST } from '../../constants';
 import { LogEntry, PmTask, EQUIPMENT_TYPE_LABELS } from '../../types';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
+import TaskForm, { formatFieldValues } from './TaskForm';
 
 const startOfToday = (): number => {
   const d = new Date();
@@ -17,6 +18,7 @@ const taskIdOf = (e: LogEntry): string | undefined =>
 const MaintenancePack: React.FC = () => {
   const { activeAsset, activeAssetId, refreshEquipment } = useActiveAsset();
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
   const loadLogs = useCallback(async () => {
     const all = await logRepo.listAll();
@@ -71,38 +73,98 @@ const MaintenancePack: React.FC = () => {
     await refreshEquipment(); // keep the asset's History view in sync
   };
 
+  const handleFormSaved = async () => {
+    setOpenTaskId(null);
+    await loadLogs();
+    await refreshEquipment();
+  };
+
   const totalVisible = facilityTasks.length + assetTasks.length;
   const doneVisible =
     facilityTasks.filter((t) => doneToday.has(keyFor(t))).length +
     assetTasks.filter((t) => doneToday.has(keyFor(t))).length;
 
   const renderRow = (task: PmTask) => {
+    const hasFields = !!(task.fields && task.fields.length);
     const checked = doneToday.has(keyFor(task));
-    return (
-      <button
-        key={task.id}
-        onClick={() => toggle(task)}
-        className={`w-full text-left flex items-start gap-3 p-3 rounded-xl border transition-all ${
-          checked ? 'border-green-400 bg-green-50' : 'border-slate-200 hover:bg-slate-50'
-        }`}
-      >
-        <span
-          className={`mt-0.5 h-5 w-5 flex-shrink-0 rounded border flex items-center justify-center text-xs font-bold ${
-            checked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-transparent'
+
+    if (!hasFields) {
+      return (
+        <button
+          key={task.id}
+          onClick={() => toggle(task)}
+          className={`w-full text-left flex items-start gap-3 p-3 rounded-xl border transition-all ${
+            checked ? 'border-green-400 bg-green-50' : 'border-slate-200 hover:bg-slate-50'
           }`}
         >
-          ✓
-        </span>
-        <span className="min-w-0">
-          <span className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+          <span
+            className={`mt-0.5 h-5 w-5 flex-shrink-0 rounded border flex items-center justify-center text-xs font-bold ${
+              checked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-transparent'
+            }`}
+          >
+            ✓
           </span>
-          <span className={`block text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
-            {task.label}
+          <span className="min-w-0">
+            <span className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+            </span>
+            <span className={`block text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
+              {task.label}
+            </span>
+            {task.hint && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
           </span>
-          {task.hint && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
-        </span>
-      </button>
+        </button>
+      );
+    }
+
+    // Tasks with structured fields: accordion. Tapping an open (undone) row expands the
+    // form; tapping a completed row un-checks it (removes the entry), matching the
+    // no-fields toggle's undo behaviour.
+    const scopeId = task.assetTypes && task.assetTypes.length ? activeAssetId : null;
+    const entry = doneToday.get(keyFor(task));
+    const isOpen = openTaskId === task.id;
+    const ws = checked ? (entry?.outputs as { worstStatus?: string } | undefined)?.worstStatus : undefined;
+    const rowClasses = checked
+      ? ws === 'fail'
+        ? 'border-red-400 bg-red-50'
+        : ws === 'warning'
+          ? 'border-yellow-400 bg-yellow-50'
+          : 'border-green-400 bg-green-50'
+      : 'border-slate-200 hover:bg-slate-50';
+    const summary =
+      checked && entry
+        ? formatFieldValues(task.fields ?? [], (entry.inputs as { values?: Record<string, unknown> }).values)
+        : '';
+
+    return (
+      <div key={task.id} className={`rounded-xl border transition-all ${rowClasses}`}>
+        <button
+          onClick={() => (checked ? toggle(task) : setOpenTaskId(isOpen ? null : task.id))}
+          className="w-full text-left flex items-start gap-3 p-3"
+        >
+          <span
+            className={`mt-0.5 h-5 w-5 flex-shrink-0 rounded border flex items-center justify-center text-xs font-bold ${
+              checked ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-transparent'
+            }`}
+          >
+            ✓
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+            </span>
+            <span className={`block text-sm ${checked ? 'text-slate-500' : 'text-slate-800'}`}>{task.label}</span>
+            {task.hint && !checked && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
+            {summary && <span className="block text-xs text-slate-500 mt-1">{summary}</span>}
+          </span>
+          {!checked && <span className="mt-0.5 text-xs text-slate-400">{isOpen ? '▲' : '▼'}</span>}
+        </button>
+        {!checked && isOpen && (
+          <div className="px-3 pb-3">
+            <TaskForm task={task} scopeEquipmentId={scopeId} onSaved={handleFormSaved} />
+          </div>
+        )}
+      </div>
     );
   };
 
