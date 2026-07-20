@@ -4,6 +4,7 @@ export enum AppTab {
   DOSING = 'dosing',
   HYDRAULICS = 'hydraulics',
   MAINTENANCE = 'maintenance',
+  REPORT = 'report',
   TROUBLESHOOTING = 'troubleshooting',
 }
 

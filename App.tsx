@@ -8,6 +8,7 @@ import EquipmentPack from './packs/equipment/EquipmentPack';
 import DosingPack from './packs/dosing/DosingPack';
 import HydraulicsPack from './packs/hydraulics/HydraulicsPack';
 import MaintenancePack from './packs/maintenance/MaintenancePack';
+import ReportPack from './packs/report/ReportPack';
 import TroubleshootingPack from './packs/troubleshooting/TroubleshootingPack';
 
 const TABS: { id: AppTab; label: string }[] = [
@@ -15,6 +16,7 @@ const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.DOSING, label: 'Dosing' },
   { id: AppTab.HYDRAULICS, label: 'Checks' },
   { id: AppTab.MAINTENANCE, label: 'Maintenance' },
+  { id: AppTab.REPORT, label: 'Report' },
   { id: AppTab.TROUBLESHOOTING, label: 'Troubleshooting' },
 ];
 
@@ -24,7 +26,7 @@ const AppInner: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 bg-slate-900 text-white border-b border-slate-800 shadow-xl px-4 py-4 md:px-8">
+      <header className="print:hidden sticky top-0 z-50 bg-slate-900 text-white border-b border-slate-800 shadow-xl px-4 py-4 md:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-tight leading-none">Centrac B Field Operator</h1>
@@ -40,7 +42,7 @@ const AppInner: React.FC = () => {
         </div>
       </header>
 
-      <nav className="bg-white border-b border-slate-200 sticky top-[72px] md:top-[80px] z-40 overflow-x-auto whitespace-nowrap">
+      <nav className="print:hidden bg-white border-b border-slate-200 sticky top-[72px] md:top-[80px] z-40 overflow-x-auto whitespace-nowrap">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex gap-4 md:gap-8">
             {TABS.map((tab) => (
@@ -65,10 +67,11 @@ const AppInner: React.FC = () => {
         {activeTab === AppTab.DOSING && <DosingPack />}
         {activeTab === AppTab.HYDRAULICS && <HydraulicsPack />}
         {activeTab === AppTab.MAINTENANCE && <MaintenancePack />}
+        {activeTab === AppTab.REPORT && <ReportPack />}
         {activeTab === AppTab.TROUBLESHOOTING && <TroubleshootingPack />}
       </main>
 
-      <footer className="bg-slate-50 border-t border-slate-200 py-6 px-4">
+      <footer className="print:hidden bg-slate-50 border-t border-slate-200 py-6 px-4">
         <div className="max-w-7xl mx-auto text-center text-slate-400 text-[10px] uppercase font-bold tracking-widest">
           © {new Date().getFullYear()} Centrac B Field Operator · API 675 Reference · Local-First / Offline
         </div>
