@@ -235,4 +235,10 @@ export const CONVERSION_FACTORS = {
   GAL_PER_CUFT: 7.48052,
   MIN_FREEBOARD_FT: 1.0,
   MINUTES_PER_DAY: 1440,
+  // PM rounds thresholds
+  MIN_CL_RESIDUAL_MGL: 0.2,   // minimum detectable/target residual
+  MRDL_CL_MGL: 4.0,           // EPA max residual disinfectant level
+  ANALYZER_DRIFT_LIMIT_MGL: 0.2, // analyzer vs grab-sample tolerance
+  CATCH_TOLERANCE_PCT: 10,    // pump catch vs expected GPH
+  MIN_DAYS_OF_SUPPLY: 7,      // chemical reorder warning threshold
 };

@@ -7,6 +7,21 @@ export enum AppTab {
   TROUBLESHOOTING = 'troubleshooting',
 }
 
+export type PmFieldType = 'reading' | 'checkitem' | 'select' | 'note';
+
+export interface PmField {
+  id: string;
+  type: PmFieldType;
+  label: string;
+  unit?: string;
+  min?: number;
+  max?: number;
+  warnLow?: number;
+  warnHigh?: number;
+  options?: string[];
+  placeholder?: string;
+}
+
 export interface PmTask {
   id: string;
   label: string;
@@ -15,6 +30,8 @@ export interface PmTask {
   assetTypes?: EquipmentType[];
   // Optional operator hint, e.g. which tab supports the task.
   hint?: string;
+  // Structured form fields for this task, if it supports guided data entry.
+  fields?: PmField[];
 }
 
 export interface TroubleshootingEntry {
