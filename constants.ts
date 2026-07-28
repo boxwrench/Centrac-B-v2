@@ -169,6 +169,220 @@ export const TROUBLESHOOTING_MATRIX: TroubleshootingEntry[] = [
     cause: 'Surface overflow rate too high (hydraulic overload).',
     recommendation: 'Reduce flow or bring another basin online; compare the surface overflow rate on the Checks tab to the design loading.',
     assetTypes: ['basin']
+  },
+
+  // ---- Chemical feed / metering ----
+  {
+    category: 'Chemical Feed',
+    symptom: 'Hypochlorite Feed Erratic / Pump Loses Suction (Gas-Binding)',
+    cause: 'Off-gassing sodium hypochlorite forms oxygen bubbles in the pump head and suction line, especially in warm/aged solution.',
+    recommendation: 'Install/verify a degassing valve at the pump head, shorten and slope the suction line up to the tank with no high points, keep stock below 10% strength and rotate stock (use oldest first), and relocate the day tank out of direct sun/heat if practical.',
+    assetTypes: ['metering_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Chemical Feed',
+    symptom: 'Pump Loses Prime During Normal Operation',
+    cause: 'Degassing solution or a suction leak is letting gas accumulate faster than the pump can purge it.',
+    recommendation: 'Bleed the pump head manually, inspect suction tubing and fittings for micro-leaks (a leak that pulls air in but not liquid out), and check that the foot valve/strainer is fully submerged with adequate tank level.',
+    assetTypes: ['metering_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Chemical Feed',
+    symptom: 'Reduced or Zero Flow — Crystallization in Line/Injection Quill',
+    cause: 'Scale (calcium carbonate) or salt crystals have built up in the discharge tubing or at the injection quill tip, especially where hypochlorite mixes with hard water.',
+    recommendation: 'Remove and soak the injection quill in dilute acid solution (per manufacturer guidance) to dissolve scale, flush the discharge line, and consider a self-cleaning or ceramic-ball check valve at the injection point to reduce recurrence.',
+    assetTypes: ['metering_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Chemical Feed',
+    symptom: 'Chemical Continues to Feed With Pump Stopped (Siphoning)',
+    cause: 'Elevation difference between the day tank and injection point lets gravity siphon chemical through the pump even when it is not running.',
+    recommendation: 'Install/verify an anti-siphon (back-pressure) valve on the discharge line, confirm the injection point is above the tank liquid level or a proper vacuum breaker is in place, and check the pump\'s internal check valves for wear that lets flow pass through.',
+    assetTypes: ['metering_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Chemical Feed',
+    symptom: 'Inconsistent Dose Despite Stable Pump Setting',
+    cause: 'Chemical in the day tank has degraded (hypochlorite losing strength with age/heat) or stratified (denser, more concentrated solution settled at the bottom).',
+    recommendation: 'Verify actual solution strength by titration rather than assuming label strength, mix/recirculate the tank before drawing suction, keep the tank out of direct sun, and shorten resupply intervals if degradation is consistently outpacing usage.',
+    assetTypes: ['metering_pump'],
+    severity: 'monitor'
+  },
+
+  // ---- Electrical (all pump types) ----
+  {
+    category: 'Electrical',
+    symptom: 'Motor Will Not Start',
+    cause: 'Tripped breaker, tripped thermal overload, or a failed/miswired contactor.',
+    recommendation: 'Lockout/tagout, check and reset the breaker, verify the overload has not tripped (reset if cooled) and reads the correct full-load amps, and inspect the contactor coil and contacts for continuity and pitting.',
+    assetTypes: ['metering_pump', 'centrifugal_pump', 'sump_pump', 'well_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Electrical',
+    symptom: 'VFD Trips on Fault',
+    cause: 'Overcurrent, overvoltage/undervoltage, overtemperature, or ground fault detected by the drive.',
+    recommendation: 'Record the fault code before clearing it, check incoming line voltage and motor cable insulation, verify drive cooling fan/vents are clear, and confirm motor and drive parameters (FLA, acceleration ramp) match the nameplate before restarting.',
+    assetTypes: ['metering_pump', 'centrifugal_pump', 'sump_pump', 'well_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Electrical',
+    symptom: 'Motor Runs Hot to the Touch or Trips on Thermal Protection',
+    cause: 'Overload (mechanical binding or process overload), single-phasing, poor ventilation, or undersized/loose conductors.',
+    recommendation: 'Verify amp draw on all legs against nameplate FLA, check for phase imbalance, clear motor cooling vents of debris, and confirm connections are torqued and not corroded.',
+    assetTypes: ['metering_pump', 'centrifugal_pump', 'sump_pump', 'well_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Electrical',
+    symptom: 'Pump Is Physically Running but SCADA/HMI Shows It Off',
+    cause: 'Failed or miswired run-status auxiliary contact, a communications fault to the RTU/PLC, or a blown control-circuit fuse feeding the status input.',
+    recommendation: 'Verify actual pump operation in the field, check the run-status contact wiring and control fuse, and confirm the I/O point and communications link at the RTU/PLC. Do not rely on SCADA status alone until confirmed — log actual run state manually in the interim.',
+    assetTypes: ['metering_pump', 'centrifugal_pump', 'sump_pump', 'well_pump'],
+    severity: 'action'
+  },
+
+  // ---- Analyzers (facility) ----
+  {
+    category: 'Analyzer',
+    symptom: 'Analyzer Reading Drifts From Grab Sample Result',
+    cause: 'Sensor fouling, calibration drift, or an aging reagent/electrode losing accuracy.',
+    recommendation: 'Pull a grab sample and compare against the analyzer immediately, clean the sensor/flow cell per manufacturer procedure, and recalibrate. If drift recurs quickly, replace the sensor or reagent.',
+    severity: 'monitor'
+  },
+  {
+    category: 'Analyzer',
+    symptom: 'No Sample Flow to Analyzer',
+    cause: 'Plugged sample line/strainer, closed or failed sample solenoid, or an air-bound sample pump.',
+    recommendation: 'Check the sample line for kinks or plugging, clean or replace the inline strainer, verify the sample solenoid/pump is energized and primed, and confirm the sample tap is not isolated.',
+    severity: 'action'
+  },
+  {
+    category: 'Analyzer',
+    symptom: 'Analyzer Alarms for Low Reagent',
+    cause: 'Reagent bottle/cartridge depleted or nearing end of service life.',
+    recommendation: 'Replace the reagent per the analyzer schedule (do not run past empty), record installation date, and verify the analyzer resumes normal readings and passes a check standard after replacement.',
+    severity: 'monitor'
+  },
+  {
+    category: 'Analyzer',
+    symptom: 'Flowmeter Reads Zero or Erratic',
+    cause: 'Empty pipe, entrained air, fouled electrodes (magmeter), or a lost/noisy signal from the transmitter.',
+    recommendation: 'Confirm the line is full and air is bled, inspect and clean electrodes/sensor per meter type, check transmitter wiring and grounding, and re-zero the meter with the line valved off and full per manufacturer procedure.',
+    severity: 'action'
+  },
+
+  // ---- Wells ----
+  {
+    category: 'Well',
+    symptom: 'Sand or Turbidity in Discharge at Startup',
+    cause: 'Well screen or gravel pack disturbance, or a damaged screen letting formation material into the casing.',
+    recommendation: 'Let the well settle before use if disturbance is recent, inspect the screen/pack for damage if turbidity persists beyond startup, and consider redevelopment. Track sand production over time — increasing trend signals screen failure.',
+    assetTypes: ['well_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Well',
+    symptom: 'Declining Specific Capacity (More Drawdown for Same Yield)',
+    cause: 'Well screen/gravel pack fouling (biofouling, incrustation) or aquifer-level decline.',
+    recommendation: 'Compare current specific capacity (gpm per foot of drawdown) against the baseline test, check static water level trends in the area, and schedule well rehabilitation (chemical treatment or mechanical redevelopment) if fouling is indicated.',
+    assetTypes: ['well_pump'],
+    severity: 'monitor'
+  },
+  {
+    category: 'Well',
+    symptom: 'Air in Discharge / Cascading Water Noise in Casing',
+    cause: 'Pump setting too close to the drawdown water level, or a loose column/drop pipe joint drawing air.',
+    recommendation: 'Verify pump bowl/intake setting depth against current pumping water level and lower if margin is inadequate, and inspect column pipe joints and check valve for leaks that allow air entrainment.',
+    assetTypes: ['well_pump'],
+    severity: 'action'
+  },
+  {
+    category: 'Well',
+    symptom: 'Positive Total Coliform (or E. coli) Sample Result',
+    cause: 'Well seal/casing breach, cross-connection, sampling tap contamination, or a genuine source-water contamination event.',
+    recommendation: 'Resample immediately from the original tap and collect repeat/upstream-downstream samples per the coliform rule; inspect the wellhead seal, vents, and casing for breach; verify chlorine residual is present and adequate at the point of sample.',
+    assetTypes: ['well_pump'],
+    severity: 'urgent',
+    escalate: 'Notify the primary operator and the state drinking water program immediately; collect repeat/upstream-downstream samples per the coliform rule.'
+  },
+
+  // ---- Storage tanks ----
+  {
+    category: 'Storage',
+    symptom: 'Tank Overflow Event',
+    cause: 'Level control/altitude valve failure, stuck float, or a SCADA setpoint/communication error that failed to stop fill.',
+    recommendation: 'Stop the fill source immediately, inspect and test the level control/altitude valve and float switch, verify SCADA setpoints and alarm thresholds, and document the event volume and duration.',
+    assetTypes: ['tank'],
+    severity: 'action'
+  },
+  {
+    category: 'Storage',
+    symptom: 'Freezing / Ice Damage to Tank Appurtenances',
+    cause: 'Inadequate insulation or heat tracing on vents, overflow piping, or exposed risers during cold weather.',
+    recommendation: 'Inspect vents and overflow for ice blockage (a blocked vent can collapse a tank), verify heat trace/insulation is functional before the next cold snap, and clear ice obstructions carefully without damaging the screen/vent.',
+    assetTypes: ['tank'],
+    severity: 'action'
+  },
+  {
+    category: 'Storage',
+    symptom: 'Interior Coating Failure / Corrosion Visible',
+    cause: 'Coating breakdown from age, poor surface prep at original application, or cathodic protection system failure.',
+    recommendation: 'Document the extent and location of failure during the next inspection/cleaning, check cathodic protection anode condition and rectifier output if equipped, and schedule recoating before base metal loss becomes structural.',
+    assetTypes: ['tank'],
+    severity: 'monitor'
+  },
+  {
+    category: 'Storage',
+    symptom: 'Signs of Contamination After a Suspected Tank Breach',
+    cause: 'Roof/vent/hatch breach, animal or debris intrusion, or vandalism allowing contaminants to enter finished water storage.',
+    recommendation: 'Take the tank offline if possible and isolate it from the distribution system, collect samples for bacteriological and chemical analysis, inspect and secure the breach point (hatch, vent, roof), and increase chlorine residual monitoring downstream.',
+    assetTypes: ['tank'],
+    severity: 'urgent',
+    escalate: 'Notify the primary operator and the state drinking water program immediately; isolate the tank from the distribution system and evaluate the need for a boil-water advisory.'
+  },
+
+  // ---- System-level (facility) ----
+  {
+    category: 'Distribution',
+    symptom: 'Low or No Chlorine Residual in Distribution System',
+    cause: 'Under-dosing at the plant/booster, excessive chlorine demand (biofilm, main breaks, stagnant dead-ends), or a feed system failure.',
+    recommendation: 'Verify chemical feed system is operating and dosing correctly, check residual at multiple points to isolate the affected area, flush dead-end mains and low-residual zones, and increase feed rate or booster chlorination if demand has increased.',
+    severity: 'urgent',
+    escalate: 'Notify the primary operator and the state drinking water program immediately; investigate the cause and re-establish adequate residual throughout the affected area, per the disinfectant residual requirements.'
+  },
+  {
+    category: 'Distribution',
+    symptom: 'Customer Low-Pressure Complaints',
+    cause: 'High demand exceeding system capacity, a closed/partially closed valve, main break, or a failing booster pump.',
+    recommendation: 'Check system pressure at the affected area and compare to normal, verify all system valves are in normal position, inspect for main breaks in the vicinity, and confirm booster pump(s) are running and at expected discharge pressure.',
+    severity: 'action'
+  },
+  {
+    category: 'Distribution',
+    symptom: 'Dirty or Discolored Water Complaints',
+    cause: 'Main break or repair stirring up sediment, hydraulic disturbance (fire flow, valve operation) resuscitating iron/manganese deposits, or unidirectional flushing not yet complete.',
+    recommendation: 'Flush the affected main(s) at a hydrant until water runs clear, check for recent nearby main work or high-demand events that could explain the disturbance, and sample for turbidity/iron if discoloration persists after flushing.',
+    severity: 'action'
+  },
+  {
+    category: 'Distribution',
+    symptom: 'Air in Mains / Sputtering at Customer Taps',
+    cause: 'Air entrainment from a recent main break repair, pump startup, or an air-release valve that is stuck closed and not venting during filling.',
+    recommendation: 'Open hydrants/blow-offs at high points to bleed air from the main, inspect and exercise air-release valves along the affected main, and fill new or repaired mains slowly to minimize air entrapment.',
+    severity: 'monitor'
+  },
+  {
+    category: 'Distribution',
+    symptom: 'Water Hammer / Banging in Mains or at Valves',
+    cause: 'Rapid valve closure, pump start/stop without soft-start/stop, or a check valve slamming shut on flow reversal.',
+    recommendation: 'Operate valves slowly (especially large main valves), verify VFD/soft-starter ramp settings on pumps, and inspect check valves for proper closure timing; consider a surge/air-relief valve at chronic locations.',
+    severity: 'monitor'
   }
 ];
 

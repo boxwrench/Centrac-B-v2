@@ -42,6 +42,10 @@ export interface TroubleshootingEntry {
   recommendation: string;
   // Which asset types this symptom applies to. Omitted = applies to all assets.
   assetTypes?: EquipmentType[];
+  // How urgent the operator response should be. Omitted = not classified.
+  severity?: 'monitor' | 'action' | 'urgent';
+  // Escalation guidance shown when severity requires notifying others (primary operator, state program, etc).
+  escalate?: string;
 }
 
 export interface CalculationResult {

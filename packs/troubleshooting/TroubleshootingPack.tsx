@@ -25,6 +25,19 @@ const TroubleshootingPack: React.FC = () => {
     });
   }, [search, scoped, activeAsset]);
 
+  const severityBadgeClass = (severity?: 'monitor' | 'action' | 'urgent') => {
+    switch (severity) {
+      case 'urgent':
+        return 'bg-red-100 text-red-700';
+      case 'action':
+        return 'bg-amber-100 text-amber-700';
+      case 'monitor':
+        return 'bg-slate-100 text-slate-600';
+      default:
+        return '';
+    }
+  };
+
   const logFix = async () => {
     if (!selected) return;
     try {
@@ -90,7 +103,14 @@ const TroubleshootingPack: React.FC = () => {
               className={`w-full text-left p-4 rounded-xl border transition-all ${
                 selected?.symptom === item.symptom ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:bg-slate-50'
               }`}>
-              <span className="text-xs font-bold uppercase text-blue-600">{item.category}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase text-blue-600">{item.category}</span>
+                {item.severity && item.severity !== 'monitor' && (
+                  <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${severityBadgeClass(item.severity)}`}>
+                    {item.severity}
+                  </span>
+                )}
+              </div>
               <p className="font-semibold text-slate-800">{item.symptom}</p>
             </button>
           ))}
@@ -112,6 +132,22 @@ const TroubleshootingPack: React.FC = () => {
                 <h5 className="text-green-600 font-bold uppercase text-sm mb-2">Recommendation</h5>
                 <div className="bg-white p-4 rounded-xl border border-green-100 text-slate-700">{selected.recommendation}</div>
               </div>
+              {selected.escalate && (
+                <div>
+                  <h5 className={`font-bold uppercase text-sm mb-2 ${selected.severity === 'urgent' ? 'text-red-600' : 'text-amber-600'}`}>
+                    Escalate If&hellip;
+                  </h5>
+                  <div
+                    className={`p-4 rounded-xl border text-sm font-medium ${
+                      selected.severity === 'urgent'
+                        ? 'bg-red-50 border-red-200 text-red-800'
+                        : 'bg-amber-50 border-amber-200 text-amber-800'
+                    }`}
+                  >
+                    {selected.escalate}
+                  </div>
+                </div>
+              )}
               <div className="flex items-center gap-3">
                 <button onClick={logFix}
                   className="bg-blue-600 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-blue-700 transition-colors">
