@@ -29,9 +29,12 @@ so each calculation is logged against a real pump:
 - **Maintenance** — PM checklist with guided task forms; completions logged
   against the active asset.
 - **Report** — daily report with review, exclusions, and print export.
-- **3D Model** — interactive Centrac B reconstruction (assembled, exploded,
-  X-ray, half-section cutaway, running mechanism) with the illustrated parts
-  list, IOM manual links, and CSV/GLB export. Deep-linkable via `#/model`.
+- **3D Model** — interactive Centrac B workspace with four sub-tabs: the 3D
+  reconstruction (assembled, exploded, X-ray, half-section cutaway, running
+  mechanism), an embedded O&M manual reader with full-text search, and
+  maintenance + troubleshooting guides that cross-link into the model and the
+  manual. Illustrated parts CSV and GLB export included. Deep-linkable via
+  `#/model`.
 
 ## Durable & offline by design
 
@@ -63,16 +66,23 @@ The simulator still lives and evolves separately; to sync a new sim revision:
 
 1. Re-copy `lib/parts.ts`, `lib/inspection.ts`, and `lib/pump-scene.ts` into
    `packs/model/` (as `parts.ts`, `inspection.ts`, `pumpScene.ts`).
-2. Re-verify with `diff` that only intended changes landed.
-3. Port any `app/page.tsx` UI changes into `packs/model/ModelPack.tsx`,
-   keeping the plain-button markup, `import.meta.env.BASE_URL` manual links,
-   and the `.cb-model .explorer` fullscreen scope.
-4. Copy `public/Centrac_B_IOM.pdf` again only if the manual file changed.
-5. Run `npx tsc --noEmit`, `npm test`, and `npm run build`.
+2. Re-copy `lib/manual-content.ts` and port `components/manual/*.tsx` into
+   `packs/model/`, keeping the plain-button markup, the `<details>`
+   accordion in the troubleshooting guide, and `import.meta.env.BASE_URL`
+   asset paths.
+3. Re-verify with `diff` that only intended changes landed.
+4. Port any `app/page.tsx` UI changes into `packs/model/ModelPack.tsx`,
+   keeping the sub-tab structure and the `.cb-model .explorer` fullscreen
+   scope.
+5. Re-copy changed `public/` assets (`Centrac_B_IOM.pdf`, `manual-index.json`,
+   `pdfjs/` worker files). Add any new runtime dependency (e.g. `pdfjs-dist`)
+   to `package.json`.
+6. Run `npx tsc --noEmit`, `npm test`, and `npm run build`.
 
-Known trade-offs: Three.js stays in a lazily loaded chunk so the main bundle
-stays lean; the IOM PDF is deployed but excluded from the service-worker
-precache, so manual links need network while the viewer itself works offline.
+Known trade-offs: Three.js and the PDF reader stay in lazily loaded chunks so
+the main bundle stays lean; the IOM PDF, search index, and PDF worker are
+precached for offline use, while the external manufacturer link and
+edge-case PDF font/wasm files still need network.
 
 ## Run locally
 

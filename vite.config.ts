@@ -16,7 +16,9 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['icon.svg'],
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
+        // mjs/json/pdf precache the O&M manual reader (worker, search
+        // index, optimized IOM) so it works offline at the pump skid.
+        globPatterns: ['**/*.{js,mjs,css,html,json,pdf,svg,png,ico,woff,woff2}'],
       },
       manifest: {
         name: 'Centrac B Field Operator',

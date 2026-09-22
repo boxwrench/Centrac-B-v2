@@ -87,3 +87,18 @@ Optimization Levers:
 - Pending: visual check of Working/Cutaway animation in a real browser
   (headless Chrome unavailable in the build sandbox); sim owner still
   iterating — future sim revisions sync per README "Updating the 3D model".
+
+### 2026-09-22 — Manual reader + service guides sync (`packs/model/`)
+
+- Ported the sim's new workspace tabs: O&M reader (`ManualReader.tsx`,
+  pdfjs-dist, worker + search index + optimized 1.67 MB IOM in `public/`),
+  maintenance and troubleshooting guides (`ServiceGuides.tsx`,
+  `manual-content.ts`). Scene `setActive` API synced; guides cross-link into
+  the model (cutaway + focus) and the reader (PDF page).
+- Adaptations: shadcn Tabs/Accordion replaced with native buttons and
+  `<details>`; all asset URLs base-aware; PDF worker, search index, and IOM
+  added to the service-worker precache (31 entries / ~5.4 MB) so the manual
+  works offline.
+- Verified: `tsc --noEmit` clean, 138/138 Vitest passing (new
+  `manual-content.test.ts`), `npm run build` succeeds, `dist/` contains the
+  lazy `pdf-*`/`pumpScene-*` chunks and all reader assets.
