@@ -78,6 +78,12 @@ The simulator still lives and evolves separately; to sync a new sim revision:
    `pdfjs/` worker files). Add any new runtime dependency (e.g. `pdfjs-dist`)
    to `package.json`.
 6. Run `npx tsc --noEmit`, `npm test`, and `npm run build`.
+7. If the sync touched `model.css`, re-apply the light theme afterwards:
+   map every hex color through `packs/model/light-palette.json` (new sim
+   rules need new entries), then re-check text contrast — body 14.6, muted
+   micro-labels ≥ 5.5, accent text ≥ 5.5, white-on-accent ≥ 4.9. Scene colors
+   in `pumpScene.ts` (background, ground, grid, outlines, section rims) are
+   hand-maintained to match and need the same treatment.
 
 Known trade-offs: Three.js and the PDF reader stay in lazily loaded chunks so
 the main bundle stays lean; the IOM PDF, search index, and PDF worker are

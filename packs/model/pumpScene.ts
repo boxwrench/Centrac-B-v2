@@ -8,7 +8,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 export type ViewState={explode:number;xray:boolean;shellOpacity:number;cutaway:boolean;cutSide:number;running:boolean;speed:number;labels:boolean;selected:string|null;isolate:boolean;phase:number;mode:string};
 export type PumpScene=ReturnType<typeof createPumpScene>;
 export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void,onPhase:(phase:number)=>void){
- const scene=new THREE.Scene(); scene.background=new THREE.Color('#181d23');
+ const scene=new THREE.Scene(); scene.background=new THREE.Color('#edf1f4');
  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(host.clientWidth,host.clientHeight);renderer.localClippingEnabled=true;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.3;host.appendChild(renderer.domElement);renderer.domElement.setAttribute('aria-label','Interactive Centrac B pump. Drag to orbit, scroll to zoom, right-drag to pan. Select parts here or in the component list.');
  const camera=new THREE.PerspectiveCamera(36,host.clientWidth/host.clientHeight,.1,200); camera.position.set(-10,7.7,11.7);
  const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(-.9,2.2,0);controls.enableDamping=true;controls.minDistance=3;controls.maxDistance=35;controls.maxPolarAngle=Math.PI*.88;
@@ -16,8 +16,8 @@ export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void
  scene.add(new THREE.HemisphereLight(0xd7e7ff,0x263044,2.0));
  const key=new THREE.DirectionalLight(0xfff0dc,4);key.position.set(-4,9,6);key.castShadow=true;key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-12,right:12,top:12,bottom:-12});key.shadow.bias=-.001;scene.add(key);
  const rim=new THREE.DirectionalLight(0x86bcff,3);rim.position.set(5,6,-7);scene.add(rim);
- const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:0x181d23,roughness:.92,metalness:.12}));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
- const grid=new THREE.GridHelper(50,100,0x414b59,0x2c343e);grid.position.y=-.065;(grid.material as THREE.Material).transparent=true;(grid.material as THREE.Material).opacity=.35;scene.add(grid);
+ const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:0xdfe5ea,roughness:.92,metalness:.12}));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
+ const grid=new THREE.GridHelper(50,100,0x9fb0bc,0xc9d4dc);grid.position.y=-.065;(grid.material as THREE.Material).transparent=true;(grid.material as THREE.Material).opacity=.6;scene.add(grid);
  const root=new THREE.Group();scene.add(root);
  const sectionPlane=new THREE.Plane(new THREE.Vector3(0,0,-1),0);
  const interiorLight=new THREE.PointLight(0xd8edff,0,15,0);scene.add(interiorLight);
@@ -93,7 +93,7 @@ export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void
  renderer.domElement.addEventListener('pointerdown',pointerDown);renderer.domElement.addEventListener('pointerup',pointerUp);
  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)};const observer=new ResizeObserver(resize);observer.observe(host);
  // Outlines provide orientation without layers of tinted surfaces obscuring the parts.
- for(const m of shells){const line=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry,30),new THREE.LineBasicMaterial({color:0x7194ad,transparent:true,opacity:.22,depthWrite:false}));line.visible=false;line.userData.inspectionHelper=true;m.add(line);outlines.set(m,line);}
+ for(const m of shells){const line=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry,30),new THREE.LineBasicMaterial({color:0x4d6f88,transparent:true,opacity:.45,depthWrite:false}));line.visible=false;line.userData.inspectionHelper=true;m.add(line);outlines.set(m,line);}
  function update(next:ViewState){
   const phaseChanged=next.phase!==state.phase;if(phaseChanged&&!next.running)theta=next.phase/100*Math.PI*2;
   state=next;sectionPlane.normal.set(0,0,-state.cutSide);
@@ -131,7 +131,7 @@ export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void
    if(!force&&rim?.userData.matrixKey===key){rim.visible=true;continue}
    const local=sectionPlane.clone().applyMatrix4(m.matrixWorld.clone().invert());
    const geometry=sectionEdges(m.geometry,local);
-   if(!rim){rim=new THREE.LineSegments(geometry,new THREE.LineBasicMaterial({color:0xffbf83,depthTest:true}));rim.userData.inspectionHelper=true;m.add(rim);sectionRims.set(m,rim)}else{rim.geometry.dispose();rim.geometry=geometry}
+   if(!rim){rim=new THREE.LineSegments(geometry,new THREE.LineBasicMaterial({color:0xb05718,depthTest:true}));rim.userData.inspectionHelper=true;m.add(rim);sectionRims.set(m,rim)}else{rim.geometry.dispose();rim.geometry=geometry}
    rim.userData.matrixKey=key;rim.visible=true;
   }
  }

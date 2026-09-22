@@ -102,3 +102,14 @@ Optimization Levers:
 - Verified: `tsc --noEmit` clean, 138/138 Vitest passing (new
   `manual-content.test.ts`), `npm run build` succeeds, `dist/` contains the
   lazy `pdf-*`/`pumpScene-*` chunks and all reader assets.
+
+### 2026-09-22 — Light theme + overlay fixes (`packs/model/`)
+
+- Restyled the simulator light to match the app: `model.css` remapped
+  through new `packs/model/light-palette.json` (271 replacements), scene
+  background/ground/grid/outlines/section rims lightened in `pumpScene.ts`.
+- Text contrast machine-checked: body 14.6, muted micro-labels 5.6, accent
+  text 5.6, white-on-accent 5.0 after darkening the accent fill.
+- Overlays: new hide-interface toggle in the tool rail, minimizable part
+  card (auto-expands on new selection), slimmer control bar, and true
+  full-bleed `:fullscreen` CSS for the existing fullscreen button.
