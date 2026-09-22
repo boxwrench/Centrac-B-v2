@@ -10,6 +10,7 @@ import HydraulicsPack from './packs/hydraulics/HydraulicsPack';
 import MaintenancePack from './packs/maintenance/MaintenancePack';
 import ReportPack from './packs/report/ReportPack';
 import TroubleshootingPack from './packs/troubleshooting/TroubleshootingPack';
+import ModelPack from './packs/model/ModelPack';
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.ASSETS, label: 'Assets' },
@@ -18,11 +19,18 @@ const TABS: { id: AppTab; label: string }[] = [
   { id: AppTab.MAINTENANCE, label: 'Maintenance' },
   { id: AppTab.REPORT, label: 'Report' },
   { id: AppTab.TROUBLESHOOTING, label: 'Troubleshooting' },
+  { id: AppTab.MODEL, label: '3D Model' },
 ];
 
 const AppInner: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<AppTab>(AppTab.ASSETS);
+  const [activeTab, setActiveTab] = useState<AppTab>(() =>
+    typeof window !== 'undefined' && window.location.hash === '#/model' ? AppTab.MODEL : AppTab.ASSETS,
+  );
   const online = useOnlineStatus();
+  const selectTab = (tab: AppTab) => {
+    setActiveTab(tab);
+    window.history.replaceState(null, '', tab === AppTab.MODEL ? '#/model' : `${window.location.pathname}${window.location.search}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -48,7 +56,7 @@ const AppInner: React.FC = () => {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => selectTab(tab.id)}
                 className={`py-4 px-1 text-sm font-semibold transition-all border-b-2 outline-none ${
                   activeTab === tab.id
                     ? 'border-blue-600 text-blue-600'
@@ -69,6 +77,7 @@ const AppInner: React.FC = () => {
         {activeTab === AppTab.MAINTENANCE && <MaintenancePack />}
         {activeTab === AppTab.REPORT && <ReportPack />}
         {activeTab === AppTab.TROUBLESHOOTING && <TroubleshootingPack />}
+        {activeTab === AppTab.MODEL && <ModelPack />}
       </main>
 
       <footer className="print:hidden bg-slate-50 border-t border-slate-200 py-6 px-4">

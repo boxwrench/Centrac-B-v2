@@ -9,9 +9,10 @@ operators** working with Milton Roy Centrac B metering pumps. Built to run on a
 tablet at the pump skid — in a concrete gallery with no signal — and to keep the
 operator's data on the device.
 
-> Status: in active development on `feat/offline-field-operator-platform`. See
-> `docs/superpowers/specs/` and `docs/superpowers/plans/` for the design and
-> implementation plan.
+> Status: live on GitHub Pages at <https://boxwrench.github.io/Centrac-B-v2/>
+> (`main` branch, deployed by `.github/workflows` on every push). See
+> `docs/superpowers/specs/` and `docs/superpowers/plans/` for the original
+> design and implementation plan, and `DEVLOG.md` for the session history.
 
 ## What it does
 
@@ -25,6 +26,12 @@ so each calculation is logged against a real pump:
   discharge peak-flow / back-pressure / high-pressure derating.
 - **Troubleshooting** — searchable symptom → root cause → recommendation matrix;
   log the chosen fix against an asset.
+- **Maintenance** — PM checklist with guided task forms; completions logged
+  against the active asset.
+- **Report** — daily report with review, exclusions, and print export.
+- **3D Model** — interactive Centrac B reconstruction (assembled, exploded,
+  X-ray, half-section cutaway, running mechanism) with the illustrated parts
+  list, IOM manual links, and CSV/GLB export. Deep-linkable via `#/model`.
 
 ## Durable & offline by design
 
@@ -43,11 +50,29 @@ The codebase is structured so new tools are added as self-contained packs:
 | `engines/` | Pure calculation functions (no React, no I/O) — the tested core |
 | `db/` | The only module that touches IndexedDB; typed `equipmentRepo` / `logRepo` |
 | `state/` | Active-asset context, online-status hook |
-| `packs/` | One folder per tool (equipment, dosing, hydraulics, troubleshooting) |
+| `packs/` | One folder per tool (equipment, dosing, hydraulics, troubleshooting, model) |
 | `components/ui/` | Shared presentational primitives |
 
 Adding a tool = adding a `packs/<name>/` folder, without editing existing engines,
 repos, or packs.
+
+### Updating the 3D model
+
+`packs/model/` is a port of the standalone simulator, not its source of truth.
+The simulator still lives and evolves separately; to sync a new sim revision:
+
+1. Re-copy `lib/parts.ts`, `lib/inspection.ts`, and `lib/pump-scene.ts` into
+   `packs/model/` (as `parts.ts`, `inspection.ts`, `pumpScene.ts`).
+2. Re-verify with `diff` that only intended changes landed.
+3. Port any `app/page.tsx` UI changes into `packs/model/ModelPack.tsx`,
+   keeping the plain-button markup, `import.meta.env.BASE_URL` manual links,
+   and the `.cb-model .explorer` fullscreen scope.
+4. Copy `public/Centrac_B_IOM.pdf` again only if the manual file changed.
+5. Run `npx tsc --noEmit`, `npm test`, and `npm run build`.
+
+Known trade-offs: Three.js stays in a lazily loaded chunk so the main bundle
+stays lean; the IOM PDF is deployed but excluded from the service-worker
+precache, so manual links need network while the viewer itself works offline.
 
 ## Run locally
 

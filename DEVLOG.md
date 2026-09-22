@@ -6,9 +6,9 @@ This file tracks development sessions, decisions, and context for continuity acr
 
 ## Project Status
 
-Current State: Initial scan and framing
+Current State: Live on GitHub Pages (`main`, `/Centrac-B-v2/` base path)
 Primary Goal: Field engineering dashboard for API 675 pump troubleshooting and sizing
-Tech Stack: React + Vite
+Tech Stack: React + Vite + Tailwind + Dexie (IndexedDB) + Three.js (3D Model tab)
 
 ---
 
@@ -70,4 +70,20 @@ Optimization Levers:
 
 ## Session Notes
 
-- None yet
+### 2026-09-22 — 3D simulator import (`packs/model/`)
+
+- Imported the standalone Centrac B simulator as a new **3D Model** tab next
+  to Troubleshooting; troubleshooter untouched.
+- `parts.ts` / `inspection.ts` / `pumpScene.ts` are byte-identical copies of
+  the sim libs (verified with `diff`); only `ModelPack.tsx` adapts the UI
+  (plain buttons instead of shadcn, base-aware IOM links, scoped fullscreen).
+- Decisions: Three.js + scene code-split into a lazy chunk loaded on tab
+  open; `#/model` hash deep-link; IOM PDF (1.8 MB) deployed but left out of
+  the service-worker precache (viewer offline, manual links online).
+- Deps added: `three@^0.186.0`, `@types/three`, `lucide-react@^1.31.0`;
+  `vite/client` types added to `tsconfig.json`.
+- Verified: `tsc --noEmit` clean, 135/135 Vitest passing (new
+  `packs/model/parts.test.ts` + `scene.test.ts`), `npm run build` succeeds.
+- Pending: visual check of Working/Cutaway animation in a real browser
+  (headless Chrome unavailable in the build sandbox); sim owner still
+  iterating — future sim revisions sync per README "Updating the 3D model".

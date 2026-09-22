@@ -6,6 +6,7 @@ export enum AppTab {
   MAINTENANCE = 'maintenance',
   REPORT = 'report',
   TROUBLESHOOTING = 'troubleshooting',
+  MODEL = 'model',
 }
 
 export type PmFieldType = 'reading' | 'checkitem' | 'select' | 'note';
