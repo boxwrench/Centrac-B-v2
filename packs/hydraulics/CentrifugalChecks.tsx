@@ -26,7 +26,7 @@ const CentrifugalChecks: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Head &amp; NPSH</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <NumField label="Flow (Q, gpm)" name="Q" value={i.Q} onChange={onChange} />
@@ -46,7 +46,7 @@ const CentrifugalChecks: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Power</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InfoCard title="Water Horsepower" value={res.whp.toFixed(2)} unit="WHP"

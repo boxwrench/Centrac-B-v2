@@ -19,17 +19,17 @@ const DosingPack: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4">Drawdown (Catch Column) Calibration</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Volume Measured (mL)</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Volume Measured (mL)</label>
             <input type="number" value={drawdown.mL}
               onChange={(e) => setDrawdown({ ...drawdown, mL: parseFloat(e.target.value) || 0 })}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Time Elapsed (Seconds)</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Time Elapsed (Seconds)</label>
             <input type="number" value={drawdown.sec}
               onChange={(e) => setDrawdown({ ...drawdown, sec: parseFloat(e.target.value) || 0 })}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono" />
@@ -41,23 +41,23 @@ const DosingPack: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4">Chemical Dosage to Pump Rate</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Plant Flow (MGD)</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Plant Flow (MGD)</label>
             <input type="number" value={dosing.mgd}
               onChange={(e) => setDosing({ ...dosing, mgd: parseFloat(e.target.value) || 0 })}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Target Dosage (PPM)</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Target Dosage (PPM)</label>
             <input type="number" value={dosing.ppm}
               onChange={(e) => setDosing({ ...dosing, ppm: parseFloat(e.target.value) || 0 })}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Chem Density (lb/gal)</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Chem Density (lb/gal)</label>
             <input type="number" value={dosing.density}
               onChange={(e) => setDosing({ ...dosing, density: parseFloat(e.target.value) || 0 })}
               className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono" />

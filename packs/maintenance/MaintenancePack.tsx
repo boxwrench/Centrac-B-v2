@@ -101,7 +101,7 @@ const PmRounds: React.FC = () => {
           key={task.id}
           onClick={() => toggle(task)}
           className={`w-full text-left flex items-start gap-3 p-3 rounded-xl border transition-all ${
-            checked ? 'border-green-400 bg-green-50' : 'border-slate-200 hover:bg-slate-50'
+            checked ? 'border-green-400 bg-green-50' : 'border-line hover:bg-raised'
           }`}
         >
           <span
@@ -115,10 +115,10 @@ const PmRounds: React.FC = () => {
             <span className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wide text-orange-700">{task.category}</span>
             </span>
-            <span className={`block text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
+            <span className={`block text-sm ${checked ? 'text-slate-600 line-through' : 'text-slate-800'}`}>
               {task.label}
             </span>
-            {task.hint && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
+            {task.hint && <span className="block text-xs text-slate-500 mt-0.5">{task.hint}</span>}
           </span>
         </button>
       );
@@ -137,7 +137,7 @@ const PmRounds: React.FC = () => {
         : ws === 'warning'
           ? 'border-yellow-400 bg-yellow-50'
           : 'border-green-400 bg-green-50'
-      : 'border-slate-200 hover:bg-slate-50';
+      : 'border-line hover:bg-raised';
     const summary =
       checked && entry
         ? formatFieldValues(task.fields ?? [], (entry.inputs as { values?: Record<string, unknown> }).values)
@@ -160,11 +160,11 @@ const PmRounds: React.FC = () => {
             <span className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wide text-orange-700">{task.category}</span>
             </span>
-            <span className={`block text-sm ${checked ? 'text-slate-500' : 'text-slate-800'}`}>{task.label}</span>
-            {task.hint && !checked && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
-            {summary && <span className="block text-xs text-slate-500 mt-1">{summary}</span>}
+            <span className={`block text-sm ${checked ? 'text-slate-600' : 'text-slate-800'}`}>{task.label}</span>
+            {task.hint && !checked && <span className="block text-xs text-slate-500 mt-0.5">{task.hint}</span>}
+            {summary && <span className="block text-xs text-slate-600 mt-1">{summary}</span>}
           </span>
-          {!checked && <span className="mt-0.5 text-xs text-slate-400">{isOpen ? '▲' : '▼'}</span>}
+          {!checked && <span className="mt-0.5 text-xs text-slate-500">{isOpen ? '▲' : '▼'}</span>}
         </button>
         {!checked && isOpen && (
           <div className="px-3 pb-3">
@@ -177,10 +177,10 @@ const PmRounds: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-surface p-5 rounded-2xl shadow-sm border border-line flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-bold text-slate-800">Preventive Maintenance Rounds</h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-600">
             EPA routine O&amp;M checklist. Completed items are logged to history for the day.
             {!activeAsset && ' Select an asset to add its equipment-specific tasks.'}
           </p>
@@ -189,23 +189,23 @@ const PmRounds: React.FC = () => {
           <div className="text-2xl font-bold font-mono text-slate-800">
             {doneVisible}/{totalVisible}
           </div>
-          <div className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Done today</div>
+          <div className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Done today</div>
         </div>
       </div>
 
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">Facility</h4>
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">Facility</h4>
         <div className="space-y-2">{facilityTasks.map(renderRow)}</div>
       </section>
 
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">
           {activeAsset ? `${activeAsset.tag} · ${EQUIPMENT_TYPE_LABELS[activeAsset.type]}` : 'Asset tasks'}
         </h4>
         {!activeAsset ? (
-          <p className="text-slate-400 text-sm">Select an asset above to see equipment-specific PM tasks.</p>
+          <p className="text-slate-500 text-sm">Select an asset above to see equipment-specific PM tasks.</p>
         ) : assetTasks.length === 0 ? (
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-500 text-sm">
             No equipment-specific PM tasks defined for {EQUIPMENT_TYPE_LABELS[activeAsset.type]}.
           </p>
         ) : (

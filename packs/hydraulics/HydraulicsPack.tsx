@@ -18,7 +18,7 @@ const HydraulicsPack: React.FC = () => {
   const type = activeAsset?.type ?? 'metering_pump';
 
   const banner = activeAsset ? (
-    <div className="bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600">
+    <div className="bg-slate-100 border border-line rounded-xl px-4 py-3 text-sm text-slate-600">
       Showing <span className="font-semibold text-slate-800">{EQUIPMENT_TYPE_LABELS[type]}</span> checks for{' '}
       <span className="font-semibold text-slate-800">{activeAsset.tag}</span>.
     </div>
@@ -45,7 +45,7 @@ const HydraulicsPack: React.FC = () => {
       break;
     case 'other':
       panel = (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-slate-500 text-sm">
+        <div className="bg-surface p-6 rounded-2xl shadow-sm border border-line text-slate-600 text-sm">
           No specific checks for this asset type yet. Use Troubleshooting, or reclassify the asset to a pump,
           basin, or tank to run performance checks.
         </div>

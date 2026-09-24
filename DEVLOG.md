@@ -128,3 +128,15 @@ Tech Stack: React + Vite + Tailwind + Dexie (IndexedDB) + Three.js (3D Model)
   troubleshooting) are now one hook, `state/useLogSave.ts`. `tsc --noUnusedLocals` is clean.
 - Fixed PM completion `outputs.date`: it was stamped in UTC, so after 5 pm
   Pacific it showed tomorrow's date. It now uses the local-time `localDateKey`.
+
+### 2026-09-24 — Soft light theme
+
+- The pure-white UI caused glare. Added Tailwind tokens `canvas #dfe3e8`
+  (page), `surface #eceff2` (cards), `raised #f5f7f9` (inputs, active pills)
+  and `line #c9d0d7` (borders), and moved the packs onto them. Muted text went
+  up one slate step (400→500, 500→600) so it stays readable on the darker surfaces.
+- Explorer: every light color in `model.css` blended 25% toward `#c9d2da`
+  (white → `#f2f4f6`), plus the scene background and ground. Muted text is now
+  `#4a5e6d` and accent text `#944510`, both ≥ 5.5:1 on the `#e4e9ee`
+  backdrop. `light-palette.json` targets were updated to match, so
+  future sim syncs reproduce the palette. Printing stays on white paper.

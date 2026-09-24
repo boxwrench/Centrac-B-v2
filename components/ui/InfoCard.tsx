@@ -14,7 +14,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ title, value, unit, status = 'neutr
     pass: 'bg-green-50 border-green-200 text-green-700',
     fail: 'bg-red-50 border-red-200 text-red-700',
     warning: 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    neutral: 'bg-white border-slate-200 text-slate-700'
+    neutral: 'bg-surface border-line text-slate-700'
   };
 
   const badgeColors = {

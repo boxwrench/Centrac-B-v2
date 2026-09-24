@@ -32,8 +32,8 @@ const ExcludeToggle: React.FC<{ excluded: boolean; onToggle: () => void }> = ({ 
     title={excluded ? 'Re-include in report' : 'Exclude from report'}
     className={`print:hidden flex-shrink-0 h-7 w-7 flex items-center justify-center rounded-lg border text-sm transition-colors ${
       excluded
-        ? 'border-slate-300 bg-slate-100 text-slate-400 hover:bg-slate-200'
-        : 'border-slate-200 text-slate-500 hover:bg-slate-50'
+        ? 'border-slate-300 bg-slate-100 text-slate-500 hover:bg-slate-200'
+        : 'border-line text-slate-600 hover:bg-raised'
     }`}
   >
     {excluded ? '\u{1F6AB}' : '\u{1F441}'}
@@ -43,12 +43,12 @@ const ExcludeToggle: React.FC<{ excluded: boolean; onToggle: () => void }> = ({ 
 /** Flat key: value listing for a log entry's outputs (checks/calibrations). */
 const OutputsList: React.FC<{ outputs: Record<string, unknown> }> = ({ outputs }) => {
   const entries = Object.entries(outputs).filter(([, v]) => v !== undefined && v !== null && v !== '');
-  if (entries.length === 0) return <p className="text-xs text-slate-400">No outputs recorded.</p>;
+  if (entries.length === 0) return <p className="text-xs text-slate-500">No outputs recorded.</p>;
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
       {entries.map(([k, v]) => (
         <span key={k}>
-          <span className="text-slate-400">{k}:</span> <span className="font-mono">{String(v)}</span>
+          <span className="text-slate-500">{k}:</span> <span className="font-mono">{String(v)}</span>
         </span>
       ))}
     </div>
@@ -74,7 +74,7 @@ const RowShell: React.FC<{
   return (
     <div
       className={`flex items-start gap-3 p-3 rounded-xl border ${
-        row.excluded ? 'print:hidden border-slate-200 bg-slate-50 opacity-60' : 'border-slate-200'
+        row.excluded ? 'print:hidden border-line bg-raised opacity-60' : 'border-line'
       }`}
     >
       <div className="min-w-0 flex-1">{children}</div>
@@ -203,14 +203,14 @@ const ReportPack: React.FC = () => {
         <PageHeader title="Daily report" subtitle="Review today's logged work, exclude entries, and print." />
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+      <div className="bg-surface p-6 rounded-2xl shadow-sm border border-line space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-black text-slate-800">Daily Operating Report</h2>
-            <p className="text-sm text-slate-500 mt-1">{date}</p>
+            <p className="text-sm text-slate-600 mt-1">{date}</p>
           </div>
           <div className="print:hidden flex items-center gap-3">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Date</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Date</label>
             <input
               type="date"
               value={date}
@@ -222,7 +222,7 @@ const ReportPack: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Plant Name</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Plant Name</label>
             <input
               type="text"
               value={plantName}
@@ -232,7 +232,7 @@ const ReportPack: React.FC = () => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-500 uppercase">Operator</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase">Operator</label>
             <input
               type="text"
               value={operatorName}
@@ -243,7 +243,7 @@ const ReportPack: React.FC = () => {
           </div>
         </div>
 
-        <div className="print:hidden flex flex-wrap items-center gap-4 pt-2 border-t border-slate-100">
+        <div className="print:hidden flex flex-wrap items-center gap-4 pt-2 border-t border-line">
           <button
             type="button"
             onClick={() => window.print()}
@@ -255,7 +255,7 @@ const ReportPack: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowExcluded((s) => !s)}
-              className="text-xs font-semibold text-slate-500 hover:text-slate-700 underline decoration-dotted"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-700 underline decoration-dotted"
             >
               {totalExcluded} excluded{showExcluded ? ' — hide' : ' — show'}
             </button>
@@ -264,12 +264,12 @@ const ReportPack: React.FC = () => {
       </div>
 
       {/* Rounds */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">
           Rounds &middot; {compiled.rounds.completed.length} of {totalVisible} done
         </h3>
         {roundsRows.length === 0 ? (
-          <p className="text-sm text-slate-400">None recorded.</p>
+          <p className="text-sm text-slate-500">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {roundsRows.map(({ task, entry }: { task: PmTask; entry: LogEntry }) => {
@@ -285,7 +285,7 @@ const ReportPack: React.FC = () => {
                 >
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-800">{task.label}</span>
-                    <span className="text-[10px] text-slate-400">{fmtTime(entry.timestamp)}</span>
+                    <span className="text-[10px] text-slate-500">{fmtTime(entry.timestamp)}</span>
                   </div>
                   {readingEntries.length > 0 ? (
                     <div className="flex flex-wrap gap-2 mt-1.5">
@@ -295,7 +295,7 @@ const ReportPack: React.FC = () => {
                         return (
                           <span
                             key={fieldId}
-                            className="inline-flex items-center gap-1 text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded px-2 py-0.5"
+                            className="inline-flex items-center gap-1 text-xs text-slate-600 bg-raised border border-line rounded px-2 py-0.5"
                           >
                             {label}: <span className="font-mono">{String(r.value)}</span>
                             <StatusChip status={r.status} />
@@ -304,7 +304,7 @@ const ReportPack: React.FC = () => {
                       })}
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-400 mt-1 block">Done{outputs?.date ? ` · ${outputs.date}` : ''}</span>
+                    <span className="text-xs text-slate-500 mt-1 block">Done{outputs?.date ? ` · ${outputs.date}` : ''}</span>
                   )}
                 </RowShell>
               );
@@ -312,11 +312,11 @@ const ReportPack: React.FC = () => {
           </div>
         )}
 
-        <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400 mt-5 mb-2 border-t pt-3">
+        <h4 className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-5 mb-2 border-t pt-3">
           Not completed
         </h4>
         {compiled.rounds.skipped.length === 0 ? (
-          <p className="text-sm text-slate-400">None recorded.</p>
+          <p className="text-sm text-slate-500">None recorded.</p>
         ) : (
           <ul className="list-disc list-inside space-y-1">
             {compiled.rounds.skipped.map((t: PmTask) => (
@@ -329,12 +329,12 @@ const ReportPack: React.FC = () => {
       </section>
 
       {/* Equipment Checks */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">
           Equipment Checks
         </h3>
         {checksRows.length === 0 ? (
-          <p className="text-sm text-slate-400">None recorded.</p>
+          <p className="text-sm text-slate-500">None recorded.</p>
         ) : (
           <div className="space-y-4">
             {Array.from(checksByAsset.entries()).map(([tag, entries]) => (
@@ -348,7 +348,7 @@ const ReportPack: React.FC = () => {
                       showExcluded={showExcluded}
                       onToggle={toggleExcluded}
                     >
-                      <span className="text-[10px] text-slate-400 block mb-1">{fmtTime(e.timestamp)}</span>
+                      <span className="text-[10px] text-slate-500 block mb-1">{fmtTime(e.timestamp)}</span>
                       <OutputsList outputs={e.outputs} />
                     </RowShell>
                   ))}
@@ -360,12 +360,12 @@ const ReportPack: React.FC = () => {
       </section>
 
       {/* Calibrations */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">
           Calibrations
         </h3>
         {calibrationRows.length === 0 ? (
-          <p className="text-sm text-slate-400">None recorded.</p>
+          <p className="text-sm text-slate-500">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {calibrationRows.map((e) => (
@@ -376,7 +376,7 @@ const ReportPack: React.FC = () => {
                 onToggle={toggleExcluded}
               >
                 <span className="text-xs font-semibold text-slate-700">{tagFor(e.equipmentId)}</span>
-                <span className="text-[10px] text-slate-400 ml-2">{fmtTime(e.timestamp)}</span>
+                <span className="text-[10px] text-slate-500 ml-2">{fmtTime(e.timestamp)}</span>
                 <div className="mt-1">
                   <OutputsList outputs={e.outputs} />
                 </div>
@@ -387,12 +387,12 @@ const ReportPack: React.FC = () => {
       </section>
 
       {/* Issues & Fixes */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">
           Issues &amp; Fixes
         </h3>
         {issueRows.length === 0 ? (
-          <p className="text-sm text-slate-400">None recorded.</p>
+          <p className="text-sm text-slate-500">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {issueRows.map((e) => {
@@ -407,11 +407,11 @@ const ReportPack: React.FC = () => {
                 >
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-800">{inputs?.symptom ?? 'Issue'}</span>
-                    <span className="text-xs text-slate-500">{tagFor(e.equipmentId)}</span>
-                    <span className="text-[10px] text-slate-400">{fmtTime(e.timestamp)}</span>
+                    <span className="text-xs text-slate-600">{tagFor(e.equipmentId)}</span>
+                    <span className="text-[10px] text-slate-500">{fmtTime(e.timestamp)}</span>
                   </div>
                   {(outputs?.cause || outputs?.recommendation || e.note) && (
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-600 mt-1">
                       {[outputs?.cause, outputs?.recommendation, e.note].filter(Boolean).join(' — ')}
                     </p>
                   )}
@@ -423,8 +423,8 @@ const ReportPack: React.FC = () => {
       </section>
 
       {/* Remarks */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3 border-b pb-2">Remarks</h3>
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600 mb-3 border-b pb-2">Remarks</h3>
         <textarea
           value={remarksDraft}
           onChange={(e) => setRemarksDraft(e.target.value)}
@@ -439,7 +439,7 @@ const ReportPack: React.FC = () => {
       </section>
 
       {/* Signature block — always prints */}
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <p className="text-sm text-slate-700">
           Operator signature: ____________________________&nbsp;&nbsp;&nbsp;&nbsp;Date: ________________
         </p>

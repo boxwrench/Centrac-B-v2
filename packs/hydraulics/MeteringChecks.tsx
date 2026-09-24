@@ -34,7 +34,7 @@ const MeteringChecks: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Suction &amp; Acceleration Head</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <NumField label="Pipe Length (L, ft)" name="L" value={suction.L} onChange={onSuction} />
@@ -54,7 +54,7 @@ const MeteringChecks: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Discharge &amp; Performance</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <NumField label="Set Flow Rate (GPH)" name="Q_set" value={discharge.Q_set} onChange={onDischarge} />

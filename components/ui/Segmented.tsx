@@ -22,11 +22,11 @@ function Segmented<T extends string>({ options, value, onChange, label }: {
           aria-selected={value === o.id}
           onClick={() => onChange(o.id)}
           className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-            value === o.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            value === o.id ? 'bg-raised text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           {o.label}
-          {o.hint && <span className="ml-2 text-xs font-medium text-slate-400">{o.hint}</span>}
+          {o.hint && <span className="ml-2 text-xs font-medium text-slate-500">{o.hint}</span>}
         </button>
       ))}
     </div>

@@ -10,7 +10,7 @@ export const NumField: React.FC<{
   step?: string;
 }> = ({ label, name, value, onChange, step }) => (
   <div className="space-y-1">
-    <label className="text-xs font-semibold text-slate-500 uppercase">{label}</label>
+    <label className="text-xs font-semibold text-slate-600 uppercase">{label}</label>
     <input
       type="number"
       name={name}

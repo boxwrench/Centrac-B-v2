@@ -4,10 +4,21 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
+  background-color: #dfe3e8;
+}
+
+@layer base {
+  input,
+  select,
+  textarea {
+    background-color: #f5f7f9;
+  }
 }
 
 @media print {
+  body {
+    background: #fff;
+  }
   @page {
     margin: 0.5in;
   }

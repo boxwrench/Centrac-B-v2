@@ -26,7 +26,7 @@ const WellChecks: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Drawdown &amp; Specific Capacity</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <NumField label="Static Level (ft)" name="staticLevelFt" value={i.staticLevelFt} onChange={onChange} />
@@ -34,7 +34,7 @@ const WellChecks: React.FC = () => {
           <NumField label="Rate (gpm)" name="rateGpm" value={i.rateGpm} onChange={onChange} />
         </div>
         <div className="space-y-1 mt-4">
-          <label className="text-xs font-semibold text-slate-500 uppercase">Trend Note</label>
+          <label className="text-xs font-semibold text-slate-600 uppercase">Trend Note</label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}

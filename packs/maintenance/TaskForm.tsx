@@ -284,7 +284,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
       const status = Number.isFinite(num) ? readingStatus(num, f) : undefined;
       return (
         <div key={f.id} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-500 uppercase">{f.label}</label>
+          <label className="text-xs font-semibold text-slate-600 uppercase">{f.label}</label>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <input
@@ -296,7 +296,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
                 className="w-full p-2 pr-12 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-orange-500"
               />
               {f.unit && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">{f.unit}</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">{f.unit}</span>
               )}
             </div>
             {status && status !== 'neutral' && (
@@ -313,13 +313,13 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
       const bool = typeof v === 'boolean' ? v : undefined;
       return (
         <div key={f.id} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-500 uppercase">{f.label}</label>
+          <label className="text-xs font-semibold text-slate-600 uppercase">{f.label}</label>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setValue(f.id, true)}
               className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors ${
-                bool === true ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                bool === true ? 'bg-green-500 border-green-500 text-white' : 'border-slate-300 text-slate-600 hover:bg-raised'
               }`}
             >
               Pass
@@ -328,7 +328,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
               type="button"
               onClick={() => setValue(f.id, false)}
               className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors ${
-                bool === false ? 'bg-red-500 border-red-500 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                bool === false ? 'bg-red-500 border-red-500 text-white' : 'border-slate-300 text-slate-600 hover:bg-raised'
               }`}
             >
               Fail
@@ -341,11 +341,11 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
     if (f.type === 'select') {
       return (
         <div key={f.id} className="space-y-1">
-          <label className="text-xs font-semibold text-slate-500 uppercase">{f.label}</label>
+          <label className="text-xs font-semibold text-slate-600 uppercase">{f.label}</label>
           <select
             value={typeof v === 'string' ? v : ''}
             onChange={(e) => setValue(f.id, e.target.value)}
-            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 bg-surface"
           >
             <option value="">Select…</option>
             {(f.options ?? []).map((opt) => (
@@ -361,7 +361,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
     // note
     return (
       <div key={f.id} className="space-y-1">
-        <label className="text-xs font-semibold text-slate-500 uppercase">{f.label}</label>
+        <label className="text-xs font-semibold text-slate-600 uppercase">{f.label}</label>
         <input
           type="text"
           value={typeof v === 'string' ? v : ''}
@@ -374,9 +374,9 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
   };
 
   return (
-    <div className="space-y-4 pt-3 border-t border-slate-100">
+    <div className="space-y-4 pt-3 border-t border-line">
       {lastLine && (
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Last: {lastLine}
           {last?.date ? ` · ${fmtShortDate(last.date)}` : ''}
         </p>
@@ -392,12 +392,12 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           onClick={handleSave}
           disabled={!canSave || saving}
           className={`font-semibold rounded-lg px-5 py-2.5 transition-colors ${
-            canSave && !saving ? 'bg-orange-700 text-white hover:bg-orange-800' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+            canSave && !saving ? 'bg-orange-700 text-white hover:bg-orange-800' : 'bg-slate-200 text-slate-500 cursor-not-allowed'
           }`}
         >
           Save
         </button>
-        {!canSave && <span className="text-xs text-slate-400">Enter all readings to save.</span>}
+        {!canSave && <span className="text-xs text-slate-500">Enter all readings to save.</span>}
       </div>
     </div>
   );

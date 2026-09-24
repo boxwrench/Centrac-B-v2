@@ -28,7 +28,7 @@ const SumpChecks: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Capacity &amp; Cycling</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <NumField label="Pump Capacity (gpm)" name="Q_pump" value={i.Q_pump} onChange={onChange} />
