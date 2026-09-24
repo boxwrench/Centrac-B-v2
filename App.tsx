@@ -99,7 +99,7 @@ const AppInner: React.FC = () => {
 
       {!immersive && (
         <footer className="print:hidden bg-surface border-t border-line py-6 px-4">
-          <div className="max-w-7xl mx-auto text-center text-slate-500 text-[10px] uppercase font-bold tracking-widest">
+          <div className="max-w-7xl mx-auto text-center text-slate-600 text-[10px] uppercase font-bold tracking-widest">
             Centrac B Field Toolkit · Works offline · Data stays on this device
           </div>
         </footer>

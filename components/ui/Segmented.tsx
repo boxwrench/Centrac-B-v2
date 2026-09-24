@@ -26,7 +26,7 @@ function Segmented<T extends string>({ options, value, onChange, label }: {
           }`}
         >
           {o.label}
-          {o.hint && <span className="ml-2 text-xs font-medium text-slate-500">{o.hint}</span>}
+          {o.hint && <span className="ml-2 text-xs font-medium text-slate-600">{o.hint}</span>}
         </button>
       ))}
     </div>

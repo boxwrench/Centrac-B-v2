@@ -18,6 +18,12 @@ export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void
  const rim=new THREE.DirectionalLight(0x86bcff,3);rim.position.set(5,6,-7);scene.add(rim);
  const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:0xdae0e6,roughness:.92,metalness:.12}));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
  const grid=new THREE.GridHelper(50,100,0x9fb0bc,0xc9d4dc);grid.position.y=-.065;(grid.material as THREE.Material).transparent=true;(grid.material as THREE.Material).opacity=.6;scene.add(grid);
+  // Stage lighting: light floor for the assembled views, dimmed slate while inspecting
+  // (Working / Cutaway / X-ray) so the pale internals stand out.
+  const groundMat=ground.material as THREE.MeshStandardMaterial,gridMat=grid.material as THREE.LineBasicMaterial;
+  const stage={light:{bg:new THREE.Color('#d9dfe5'),ground:new THREE.Color(0xcfd6dd),grid:new THREE.Color(0xb3c0ca)},dim:{bg:new THREE.Color('#2b3641'),ground:new THREE.Color(0x151c22),grid:new THREE.Color(0x3a4752)}};
+  function setStage(dim:boolean){const c=dim?stage.dim:stage.light;(scene.background as THREE.Color).copy(c.bg);groundMat.color.copy(c.ground);gridMat.color.copy(c.grid);gridMat.vertexColors=false;gridMat.needsUpdate=true}
+  setStage(false);
  const root=new THREE.Group();scene.add(root);
  const sectionPlane=new THREE.Plane(new THREE.Vector3(0,0,-1),0);
  const interiorLight=new THREE.PointLight(0xd8edff,0,15,0);scene.add(interiorLight);
@@ -97,7 +103,7 @@ export function createPumpScene(host:HTMLElement,onSelect:(id:string|null)=>void
  function update(next:ViewState){
   const phaseChanged=next.phase!==state.phase;if(phaseChanged&&!next.running)theta=next.phase/100*Math.PI*2;
   state=next;sectionPlane.normal.set(0,0,-state.cutSide);
-  const inspecting=(state.xray||state.cutaway)&&!state.isolate;
+  const inspecting=(state.xray||state.cutaway)&&!state.isolate;setStage(inspecting);
   for(const m of meshes){
    if(!(m.material instanceof THREE.MeshStandardMaterial))continue;
    const mat=m.material,source=original.get(m)!;const id=m.userData.id;

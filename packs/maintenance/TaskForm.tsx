@@ -296,7 +296,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
                 className="w-full p-2 pr-12 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-orange-500"
               />
               {f.unit && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">{f.unit}</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-600">{f.unit}</span>
               )}
             </div>
             {status && status !== 'neutral' && (
@@ -376,7 +376,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
   return (
     <div className="space-y-4 pt-3 border-t border-line">
       {lastLine && (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-600">
           Last: {lastLine}
           {last?.date ? ` · ${fmtShortDate(last.date)}` : ''}
         </p>
@@ -392,12 +392,12 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           onClick={handleSave}
           disabled={!canSave || saving}
           className={`font-semibold rounded-lg px-5 py-2.5 transition-colors ${
-            canSave && !saving ? 'bg-orange-700 text-white hover:bg-orange-800' : 'bg-slate-200 text-slate-500 cursor-not-allowed'
+            canSave && !saving ? 'bg-orange-700 text-white hover:bg-orange-800' : 'bg-slate-200 text-slate-600 cursor-not-allowed'
           }`}
         >
           Save
         </button>
-        {!canSave && <span className="text-xs text-slate-500">Enter all readings to save.</span>}
+        {!canSave && <span className="text-xs text-slate-600">Enter all readings to save.</span>}
       </div>
     </div>
   );

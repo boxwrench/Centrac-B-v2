@@ -32,7 +32,7 @@ const ExcludeToggle: React.FC<{ excluded: boolean; onToggle: () => void }> = ({ 
     title={excluded ? 'Re-include in report' : 'Exclude from report'}
     className={`print:hidden flex-shrink-0 h-7 w-7 flex items-center justify-center rounded-lg border text-sm transition-colors ${
       excluded
-        ? 'border-slate-300 bg-slate-100 text-slate-500 hover:bg-slate-200'
+        ? 'border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200'
         : 'border-line text-slate-600 hover:bg-raised'
     }`}
   >
@@ -43,12 +43,12 @@ const ExcludeToggle: React.FC<{ excluded: boolean; onToggle: () => void }> = ({ 
 /** Flat key: value listing for a log entry's outputs (checks/calibrations). */
 const OutputsList: React.FC<{ outputs: Record<string, unknown> }> = ({ outputs }) => {
   const entries = Object.entries(outputs).filter(([, v]) => v !== undefined && v !== null && v !== '');
-  if (entries.length === 0) return <p className="text-xs text-slate-500">No outputs recorded.</p>;
+  if (entries.length === 0) return <p className="text-xs text-slate-600">No outputs recorded.</p>;
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
       {entries.map(([k, v]) => (
         <span key={k}>
-          <span className="text-slate-500">{k}:</span> <span className="font-mono">{String(v)}</span>
+          <span className="text-slate-600">{k}:</span> <span className="font-mono">{String(v)}</span>
         </span>
       ))}
     </div>
@@ -269,7 +269,7 @@ const ReportPack: React.FC = () => {
           Rounds &middot; {compiled.rounds.completed.length} of {totalVisible} done
         </h3>
         {roundsRows.length === 0 ? (
-          <p className="text-sm text-slate-500">None recorded.</p>
+          <p className="text-sm text-slate-600">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {roundsRows.map(({ task, entry }: { task: PmTask; entry: LogEntry }) => {
@@ -285,7 +285,7 @@ const ReportPack: React.FC = () => {
                 >
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-800">{task.label}</span>
-                    <span className="text-[10px] text-slate-500">{fmtTime(entry.timestamp)}</span>
+                    <span className="text-[10px] text-slate-600">{fmtTime(entry.timestamp)}</span>
                   </div>
                   {readingEntries.length > 0 ? (
                     <div className="flex flex-wrap gap-2 mt-1.5">
@@ -304,7 +304,7 @@ const ReportPack: React.FC = () => {
                       })}
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-500 mt-1 block">Done{outputs?.date ? ` · ${outputs.date}` : ''}</span>
+                    <span className="text-xs text-slate-600 mt-1 block">Done{outputs?.date ? ` · ${outputs.date}` : ''}</span>
                   )}
                 </RowShell>
               );
@@ -312,11 +312,11 @@ const ReportPack: React.FC = () => {
           </div>
         )}
 
-        <h4 className="text-xs font-bold uppercase tracking-wide text-slate-500 mt-5 mb-2 border-t pt-3">
+        <h4 className="text-xs font-bold uppercase tracking-wide text-slate-600 mt-5 mb-2 border-t pt-3">
           Not completed
         </h4>
         {compiled.rounds.skipped.length === 0 ? (
-          <p className="text-sm text-slate-500">None recorded.</p>
+          <p className="text-sm text-slate-600">None recorded.</p>
         ) : (
           <ul className="list-disc list-inside space-y-1">
             {compiled.rounds.skipped.map((t: PmTask) => (
@@ -334,7 +334,7 @@ const ReportPack: React.FC = () => {
           Equipment Checks
         </h3>
         {checksRows.length === 0 ? (
-          <p className="text-sm text-slate-500">None recorded.</p>
+          <p className="text-sm text-slate-600">None recorded.</p>
         ) : (
           <div className="space-y-4">
             {Array.from(checksByAsset.entries()).map(([tag, entries]) => (
@@ -348,7 +348,7 @@ const ReportPack: React.FC = () => {
                       showExcluded={showExcluded}
                       onToggle={toggleExcluded}
                     >
-                      <span className="text-[10px] text-slate-500 block mb-1">{fmtTime(e.timestamp)}</span>
+                      <span className="text-[10px] text-slate-600 block mb-1">{fmtTime(e.timestamp)}</span>
                       <OutputsList outputs={e.outputs} />
                     </RowShell>
                   ))}
@@ -365,7 +365,7 @@ const ReportPack: React.FC = () => {
           Calibrations
         </h3>
         {calibrationRows.length === 0 ? (
-          <p className="text-sm text-slate-500">None recorded.</p>
+          <p className="text-sm text-slate-600">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {calibrationRows.map((e) => (
@@ -376,7 +376,7 @@ const ReportPack: React.FC = () => {
                 onToggle={toggleExcluded}
               >
                 <span className="text-xs font-semibold text-slate-700">{tagFor(e.equipmentId)}</span>
-                <span className="text-[10px] text-slate-500 ml-2">{fmtTime(e.timestamp)}</span>
+                <span className="text-[10px] text-slate-600 ml-2">{fmtTime(e.timestamp)}</span>
                 <div className="mt-1">
                   <OutputsList outputs={e.outputs} />
                 </div>
@@ -392,7 +392,7 @@ const ReportPack: React.FC = () => {
           Issues &amp; Fixes
         </h3>
         {issueRows.length === 0 ? (
-          <p className="text-sm text-slate-500">None recorded.</p>
+          <p className="text-sm text-slate-600">None recorded.</p>
         ) : (
           <div className="space-y-2">
             {issueRows.map((e) => {
@@ -408,7 +408,7 @@ const ReportPack: React.FC = () => {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-800">{inputs?.symptom ?? 'Issue'}</span>
                     <span className="text-xs text-slate-600">{tagFor(e.equipmentId)}</span>
-                    <span className="text-[10px] text-slate-500">{fmtTime(e.timestamp)}</span>
+                    <span className="text-[10px] text-slate-600">{fmtTime(e.timestamp)}</span>
                   </div>
                   {(outputs?.cause || outputs?.recommendation || e.note) && (
                     <p className="text-xs text-slate-600 mt-1">

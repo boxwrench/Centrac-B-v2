@@ -10,10 +10,10 @@ export default {
     extend: {
       // Soft "concrete" light theme: nothing brighter than ~97% white, to cut glare.
       colors: {
-        canvas: '#dfe3e8', // page background
-        surface: '#eceff2', // cards and panels
-        raised: '#f5f7f9', // inputs, active pills, hover
-        line: '#c9d0d7', // borders
+        canvas: '#d5dae0', // page background
+        surface: '#e3e7eb', // cards and panels
+        raised: '#eceff2', // inputs, active pills, hover
+        line: '#bec6ce', // borders
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

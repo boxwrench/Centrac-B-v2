@@ -148,7 +148,10 @@ The simulator still lives and evolves separately; to sync a new sim revision:
    no surface brighter than `#f5f7f9` (see the tokens in `tailwind.config.js`).
    Scene colors
    in `pumpScene.ts` (background, ground, grid, outlines, section rims) are
-   hand-maintained to match and need the same treatment. Then restore the
+   hand-maintained to match and need the same treatment; `pumpScene.ts` also
+   carries a `stage` light/dim pair (`setStage`, called from `update`) that
+   darkens the floor during Working / Cutaway / X-ray, with matching
+   `.viewport.stage-dim` text rules at the end of `model.css`. Then restore the
    **"App shell integration"** block at the end of `model.css` — the
    `.cb-model`, `.explorer-embed`, and related mobile-override rules that make
    the explorer full-bleed and let the service guides render inside a regular

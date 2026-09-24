@@ -110,14 +110,14 @@ const PlantSymptoms: React.FC = () => {
               <p className="font-semibold text-slate-800">{item.symptom}</p>
             </button>
           ))}
-          {items.length === 0 && <div className="text-center py-12 text-slate-500">No symptoms found.</div>}
+          {items.length === 0 && <div className="text-center py-12 text-slate-600">No symptoms found.</div>}
         </div>
 
         <div className="min-h-[300px]">
           {selected ? (
             <div className="bg-raised rounded-2xl border-2 border-dashed border-slate-300 p-8 space-y-6">
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Selected Symptom</h4>
+                <h4 className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">Selected Symptom</h4>
                 <p className="text-2xl font-bold text-slate-800">{selected.symptom}</p>
               </div>
               <div>
@@ -153,7 +153,7 @@ const PlantSymptoms: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-raised rounded-2xl border-2 border-dashed border-slate-300 p-12 text-center text-slate-500">
+            <div className="bg-raised rounded-2xl border-2 border-dashed border-slate-300 p-12 text-center text-slate-600">
               Select a symptom to view diagnostic steps.
             </div>
           )}

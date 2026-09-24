@@ -78,7 +78,7 @@ const EquipmentPack: React.FC = () => {
       <section className="bg-surface p-6 rounded-2xl shadow-sm border border-line">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Equipment ({equipment.length})</h3>
         {equipment.length === 0 ? (
-          <p className="text-slate-500 text-sm">No equipment yet. Add a pump or tank above.</p>
+          <p className="text-slate-600 text-sm">No equipment yet. Add a pump or tank above.</p>
         ) : (
           <div className="space-y-2">
             {equipment.map((eq: Equipment) => (
@@ -88,7 +88,7 @@ const EquipmentPack: React.FC = () => {
                 }`}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-slate-800">{eq.tag}</span>
-                  <span className="text-xs uppercase text-slate-500">{EQUIPMENT_TYPE_LABELS[eq.type]}</span>
+                  <span className="text-xs uppercase text-slate-600">{EQUIPMENT_TYPE_LABELS[eq.type]}</span>
                 </div>
                 {(eq.make || eq.model) && (
                   <p className="text-xs text-slate-600">{[eq.make, eq.model].filter(Boolean).join(' · ')}</p>
@@ -104,16 +104,16 @@ const EquipmentPack: React.FC = () => {
           History {activeAssetId ? `(${history.length})` : ''}
         </h3>
         {!activeAssetId ? (
-          <p className="text-slate-500 text-sm">Select an asset to see its saved results.</p>
+          <p className="text-slate-600 text-sm">Select an asset to see its saved results.</p>
         ) : history.length === 0 ? (
-          <p className="text-slate-500 text-sm">No saved results for this asset yet.</p>
+          <p className="text-slate-600 text-sm">No saved results for this asset yet.</p>
         ) : (
           <div className="space-y-2">
             {history.map((h) => (
               <div key={h.id} className="p-3 rounded-lg border border-line text-sm">
                 <div className="flex justify-between">
                   <span className="font-semibold uppercase text-orange-700 text-xs">{h.kind}</span>
-                  <span className="text-xs text-slate-500">{new Date(h.timestamp).toLocaleString()}</span>
+                  <span className="text-xs text-slate-600">{new Date(h.timestamp).toLocaleString()}</span>
                 </div>
                 <p className="font-mono text-xs text-slate-600 mt-1 break-all">{JSON.stringify(h.outputs)}</p>
                 {h.note && <p className="text-xs text-slate-600 mt-1">{h.note}</p>}

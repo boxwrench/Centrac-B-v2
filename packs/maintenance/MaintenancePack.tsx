@@ -118,7 +118,7 @@ const PmRounds: React.FC = () => {
             <span className={`block text-sm ${checked ? 'text-slate-600 line-through' : 'text-slate-800'}`}>
               {task.label}
             </span>
-            {task.hint && <span className="block text-xs text-slate-500 mt-0.5">{task.hint}</span>}
+            {task.hint && <span className="block text-xs text-slate-600 mt-0.5">{task.hint}</span>}
           </span>
         </button>
       );
@@ -161,10 +161,10 @@ const PmRounds: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wide text-orange-700">{task.category}</span>
             </span>
             <span className={`block text-sm ${checked ? 'text-slate-600' : 'text-slate-800'}`}>{task.label}</span>
-            {task.hint && !checked && <span className="block text-xs text-slate-500 mt-0.5">{task.hint}</span>}
+            {task.hint && !checked && <span className="block text-xs text-slate-600 mt-0.5">{task.hint}</span>}
             {summary && <span className="block text-xs text-slate-600 mt-1">{summary}</span>}
           </span>
-          {!checked && <span className="mt-0.5 text-xs text-slate-500">{isOpen ? '▲' : '▼'}</span>}
+          {!checked && <span className="mt-0.5 text-xs text-slate-600">{isOpen ? '▲' : '▼'}</span>}
         </button>
         {!checked && isOpen && (
           <div className="px-3 pb-3">
@@ -189,7 +189,7 @@ const PmRounds: React.FC = () => {
           <div className="text-2xl font-bold font-mono text-slate-800">
             {doneVisible}/{totalVisible}
           </div>
-          <div className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Done today</div>
+          <div className="text-[10px] uppercase font-bold tracking-widest text-slate-600">Done today</div>
         </div>
       </div>
 
@@ -203,9 +203,9 @@ const PmRounds: React.FC = () => {
           {activeAsset ? `${activeAsset.tag} · ${EQUIPMENT_TYPE_LABELS[activeAsset.type]}` : 'Asset tasks'}
         </h4>
         {!activeAsset ? (
-          <p className="text-slate-500 text-sm">Select an asset above to see equipment-specific PM tasks.</p>
+          <p className="text-slate-600 text-sm">Select an asset above to see equipment-specific PM tasks.</p>
         ) : assetTasks.length === 0 ? (
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-600 text-sm">
             No equipment-specific PM tasks defined for {EQUIPMENT_TYPE_LABELS[activeAsset.type]}.
           </p>
         ) : (

@@ -140,3 +140,16 @@ Tech Stack: React + Vite + Tailwind + Dexie (IndexedDB) + Three.js (3D Model)
   `#4a5e6d` and accent text `#944510`, both ≥ 5.5:1 on the `#e4e9ee`
   backdrop. `light-palette.json` targets were updated to match, so
   future sim syncs reproduce the palette. Printing stays on white paper.
+
+### 2026-09-24 — Darker step + dimmed inspection stage
+
+- Palette one step darker: `canvas #d5dae0`, `surface #e3e7eb`, `raised #eceff2`,
+  `line #bec6ce`. Explorer light colors now blended 35% toward cool gray.
+  Muted text is `#495c6b` and accent text `#904310` (≥ 5.5:1 on the `#e0e6eb`
+  backdrop). Remaining `text-slate-500` labels moved to slate-600, since they
+  fell to 3.8:1 on the darker cards. `light-palette.json` updated to match.
+- Working / Cutaway / X-ray now dim the stage (`setStage` in `pumpScene.ts`):
+  slate background, near-black floor and grid, so the pale internals read
+  clearly. Text on the canvas switches to light via `.viewport.stage-dim`.
+  Assembled/Exploded keep the light floor. The canvas disclaimer is hidden
+  while inspecting, because it collided with the Casing slider.
