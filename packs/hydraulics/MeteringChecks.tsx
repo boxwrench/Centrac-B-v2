@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { vacuumDemand, dischargePerformance } from '../../engines/hydraulics';
-import { NumField, SaveBar, useCheckSave, r2 } from './checkKit';
+import { NumField, SaveBar, r2 } from './checkKit';
+import { useLogSave } from '../../state/useLogSave';
 
 /** Metering (Centrac B feed) pump checks: API 675 suction + discharge performance. */
 const MeteringChecks: React.FC = () => {
-  const { save, msg, activeAsset } = useCheckSave();
+  const { save, msg, activeAsset } = useLogSave('hydraulics');
   const [suction, setSuction] = useState({ L: 10, N: 144, Q: 50, SG: 1, D: 0.5, H_lift: 2 });
   const [discharge, setDischarge] = useState({ Q_set: 50, P_d: 150 });
 

@@ -1,15 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import { TROUBLESHOOTING_MATRIX } from '../../constants';
 import { TroubleshootingEntry, EQUIPMENT_TYPE_LABELS } from '../../types';
-import { logRepo } from '../../db/logRepo';
+import { useLogSave } from '../../state/useLogSave';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
+import { useNav } from '../../state/NavContext';
+import PageHeader from '../../components/ui/PageHeader';
+import Segmented from '../../components/ui/Segmented';
+import { TroubleshootingGuide } from '../model/ServiceGuides';
 
-const TroubleshootingPack: React.FC = () => {
-  const { activeAssetId, activeAsset, refreshEquipment } = useActiveAsset();
+type TroubleView = 'centrac' | 'plant';
+
+const PlantSymptoms: React.FC = () => {
+  const { activeAsset } = useActiveAsset();
+  const { save, msg } = useLogSave('troubleshoot', { done: 'Logged to', failed: 'Log failed — selection kept, try again' });
   const [selected, setSelected] = useState<TroubleshootingEntry | null>(null);
   const [search, setSearch] = useState('');
   const [showAll, setShowAll] = useState(false);
-  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
 
   // Scope to the active asset's type unless the operator asks for everything.
   // Entries without assetTypes apply to every asset.
@@ -40,20 +46,10 @@ const TroubleshootingPack: React.FC = () => {
 
   const logFix = async () => {
     if (!selected) return;
-    try {
-      await logRepo.add({
-        equipmentId: activeAssetId,
-        kind: 'troubleshoot',
-        inputs: { symptom: selected.symptom, category: selected.category },
-        outputs: { cause: selected.cause, recommendation: selected.recommendation },
-      });
-      await refreshEquipment();
-      setMsg({ text: `Logged to ${activeAsset ? activeAsset.tag : 'Unassigned'}`, ok: true });
-    } catch {
-      // Persistence failed — never lose the selection; surface a non-blocking notice.
-      setMsg({ text: 'Log failed — selection kept, try again', ok: false });
-    }
-    setTimeout(() => setMsg(null), 2500);
+    await save(
+      { symptom: selected.symptom, category: selected.category },
+      { cause: selected.cause, recommendation: selected.recommendation },
+    );
   };
 
   return (
@@ -71,7 +67,7 @@ const TroubleshootingPack: React.FC = () => {
             <button
               onClick={() => setShowAll(false)}
               className={`px-3 py-1.5 font-semibold transition-colors ${
-                !showAll ? 'bg-blue-600 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'
+                !showAll ? 'bg-orange-700 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'
               }`}
             >
               This asset
@@ -79,7 +75,7 @@ const TroubleshootingPack: React.FC = () => {
             <button
               onClick={() => setShowAll(true)}
               className={`px-3 py-1.5 font-semibold transition-colors ${
-                showAll ? 'bg-blue-600 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'
+                showAll ? 'bg-orange-700 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'
               }`}
             >
               All assets
@@ -91,7 +87,7 @@ const TroubleshootingPack: React.FC = () => {
       <input
         type="text"
         placeholder="Search symptoms or categories (e.g. 'noise', 'cavitation', 'cycling')..."
-        className="w-full p-4 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full p-4 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-orange-500"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -101,10 +97,10 @@ const TroubleshootingPack: React.FC = () => {
           {items.map((item, idx) => (
             <button key={idx} onClick={() => setSelected(item)}
               className={`w-full text-left p-4 rounded-xl border transition-all ${
-                selected?.symptom === item.symptom ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:bg-slate-50'
+                selected?.symptom === item.symptom ? 'border-orange-500 bg-orange-50 ring-1 ring-orange-500' : 'border-slate-200 hover:bg-slate-50'
               }`}>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase text-blue-600">{item.category}</span>
+                <span className="text-xs font-bold uppercase text-orange-700">{item.category}</span>
                 {item.severity && item.severity !== 'monitor' && (
                   <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${severityBadgeClass(item.severity)}`}>
                     {item.severity}
@@ -150,7 +146,7 @@ const TroubleshootingPack: React.FC = () => {
               )}
               <div className="flex items-center gap-3">
                 <button onClick={logFix}
-                  className="bg-blue-600 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-blue-700 transition-colors">
+                  className="bg-orange-700 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-orange-800 transition-colors">
                   Log this fix{activeAsset ? ` · ${activeAsset.tag}` : ' · Unassigned'}
                 </button>
                 {msg && <span className={`text-sm font-medium ${msg.ok ? 'text-green-600' : 'text-red-600'}`}>{msg.text}</span>}
@@ -163,6 +159,42 @@ const TroubleshootingPack: React.FC = () => {
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+const TroubleshootingPack: React.FC = () => {
+  const { activeAsset } = useActiveAsset();
+  const { openManual, openPart } = useNav();
+  const [view, setView] = useState<TroubleView>(() =>
+    !activeAsset || activeAsset.type === 'metering_pump' ? 'centrac' : 'plant',
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Troubleshoot"
+        subtitle="Start from the symptom. Manual-backed guidance for the Centrac B, plus the plant symptom matrix."
+      >
+        <Segmented
+          label="Troubleshooting view"
+          value={view}
+          onChange={setView}
+          options={[
+            { id: 'centrac', label: 'Centrac B · O&M manual' },
+            { id: 'plant', label: 'Plant symptoms' },
+          ]}
+        />
+      </PageHeader>
+      {view === 'centrac' ? (
+        <div className="cb-model">
+          <div className="explorer explorer-embed">
+            <TroubleshootingGuide onManual={openManual} onPart={openPart} />
+          </div>
+        </div>
+      ) : (
+        <PlantSymptoms />
+      )}
     </div>
   );
 };

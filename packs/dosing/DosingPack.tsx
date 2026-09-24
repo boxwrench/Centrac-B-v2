@@ -1,34 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { drawdownGph, dosingGph } from '../../engines/dosing';
-import { logRepo } from '../../db/logRepo';
-import { useActiveAsset } from '../../state/ActiveAssetContext';
+import { useLogSave } from '../../state/useLogSave';
 
 const DosingPack: React.FC = () => {
-  const { activeAssetId, activeAsset, refreshEquipment } = useActiveAsset();
+  const { save: saveLog, msg, activeAsset } = useLogSave('dosing');
   const [drawdown, setDrawdown] = useState({ mL: 100, sec: 60 });
   const [dosing, setDosing] = useState({ mgd: 1, ppm: 2, density: 8.34 });
-  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
 
   const gph = useMemo(() => drawdownGph(drawdown.mL, drawdown.sec), [drawdown]);
   const requiredGph = useMemo(() => dosingGph(dosing), [dosing]);
 
-  const save = async () => {
-    try {
-      await logRepo.add({
-        equipmentId: activeAssetId,
-        kind: 'dosing',
-        inputs: { drawdown, dosing },
-        outputs: { drawdownGph: Number(gph.toFixed(2)), requiredGph: Number(requiredGph.toFixed(2)) },
-      });
-      await refreshEquipment();
-      setMsg({ text: `Saved to ${activeAsset ? activeAsset.tag : 'Unassigned'}`, ok: true });
-    } catch {
-      // Persistence failed — never lose what is on screen; surface a non-blocking notice.
-      setMsg({ text: 'Save failed — result is still on screen, try again', ok: false });
-    }
-    setTimeout(() => setMsg(null), 2500);
-  };
+  const save = () =>
+    saveLog(
+      { drawdown, dosing },
+      { drawdownGph: Number(gph.toFixed(2)), requiredGph: Number(requiredGph.toFixed(2)) },
+    );
 
   return (
     <div className="space-y-8">
@@ -84,7 +71,7 @@ const DosingPack: React.FC = () => {
 
       <div className="flex items-center gap-3">
         <button onClick={save}
-          className="bg-blue-600 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-blue-700 transition-colors">
+          className="bg-orange-700 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-orange-800 transition-colors">
           Save to log{activeAsset ? ` · ${activeAsset.tag}` : ' · Unassigned'}
         </button>
         {msg && <span className={`text-sm font-medium ${msg.ok ? 'text-green-600' : 'text-red-600'}`}>{msg.text}</span>}

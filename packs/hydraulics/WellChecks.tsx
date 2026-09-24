@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { specificCapacity } from '../../engines/rounds';
-import { NumField, SaveBar, useCheckSave, r2 } from './checkKit';
+import { NumField, SaveBar, r2 } from './checkKit';
+import { useLogSave } from '../../state/useLogSave';
 
 const fmt = (n: number, unit: string) => (Number.isFinite(n) ? `${n.toFixed(1)} ${unit}` : '∞');
 
 /** Well pump checks: drawdown and specific capacity from static/pumping levels and rate. */
 const WellChecks: React.FC = () => {
-  const { save, msg, activeAsset } = useCheckSave();
+  const { save, msg, activeAsset } = useLogSave('hydraulics');
   const [i, setI] = useState({ staticLevelFt: 50, pumpingLevelFt: 80, rateGpm: 100 });
   const [note, setNote] = useState('');
 
@@ -38,7 +39,7 @@ const WellChecks: React.FC = () => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={2}
-            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Observations on level trend over time..."
           />
         </div>

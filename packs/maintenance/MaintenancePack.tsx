@@ -3,7 +3,14 @@ import { PM_CHECKLIST } from '../../constants';
 import { LogEntry, PmTask, EQUIPMENT_TYPE_LABELS } from '../../types';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
+import { useNav } from '../../state/NavContext';
+import PageHeader from '../../components/ui/PageHeader';
+import Segmented from '../../components/ui/Segmented';
+import { MaintenanceGuide } from '../model/ServiceGuides';
 import TaskForm, { formatFieldValues } from './TaskForm';
+import { localDateKey } from '../../engines/report';
+
+type MaintenanceView = 'rounds' | 'centrac';
 
 const startOfToday = (): number => {
   const d = new Date();
@@ -15,7 +22,7 @@ const FACILITY_KEY = 'facility';
 const taskIdOf = (e: LogEntry): string | undefined =>
   (e.inputs as { taskId?: string } | undefined)?.taskId;
 
-const MaintenancePack: React.FC = () => {
+const PmRounds: React.FC = () => {
   const { activeAsset, activeAssetId, refreshEquipment } = useActiveAsset();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
@@ -66,7 +73,7 @@ const MaintenancePack: React.FC = () => {
         equipmentId: scopeId,
         kind: 'maintenance',
         inputs: { taskId: task.id, label: task.label },
-        outputs: { done: true, date: new Date().toISOString().slice(0, 10) },
+        outputs: { done: true, date: localDateKey(Date.now()) },
       });
     }
     await loadLogs();
@@ -106,7 +113,7 @@ const MaintenancePack: React.FC = () => {
           </span>
           <span className="min-w-0">
             <span className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wide text-orange-700">{task.category}</span>
             </span>
             <span className={`block text-sm ${checked ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
               {task.label}
@@ -151,7 +158,7 @@ const MaintenancePack: React.FC = () => {
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{task.category}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wide text-orange-700">{task.category}</span>
             </span>
             <span className={`block text-sm ${checked ? 'text-slate-500' : 'text-slate-800'}`}>{task.label}</span>
             {task.hint && !checked && <span className="block text-xs text-slate-400 mt-0.5">{task.hint}</span>}
@@ -205,6 +212,39 @@ const MaintenancePack: React.FC = () => {
           <div className="space-y-2">{assetTasks.map(renderRow)}</div>
         )}
       </section>
+    </div>
+  );
+};
+
+const MaintenancePack: React.FC = () => {
+  const { openManual, openPart } = useNav();
+  const [view, setView] = useState<MaintenanceView>('rounds');
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Maintenance"
+        subtitle="Today's rounds and PM tasks, plus the Centrac B service intervals from the manual."
+      >
+        <Segmented
+          label="Maintenance view"
+          value={view}
+          onChange={setView}
+          options={[
+            { id: 'rounds', label: 'Rounds & PM' },
+            { id: 'centrac', label: 'Centrac B service intervals' },
+          ]}
+        />
+      </PageHeader>
+      {view === 'rounds' ? (
+        <PmRounds />
+      ) : (
+        <div className="cb-model">
+          <div className="explorer explorer-embed">
+            <MaintenanceGuide onManual={openManual} onPart={openPart} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

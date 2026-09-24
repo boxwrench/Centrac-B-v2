@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { evaluateSump } from '../../engines/sump';
-import { NumField, SaveBar, useCheckSave, r2 } from './checkKit';
+import { NumField, SaveBar, r2 } from './checkKit';
+import { useLogSave } from '../../state/useLogSave';
 
 const fmt = (n: number, unit: string) => (Number.isFinite(n) ? `${n.toFixed(1)} ${unit}` : '∞');
 
 /** Sump / lift-station pump checks: capacity vs inflow and cycle behaviour. */
 const SumpChecks: React.FC = () => {
-  const { save, msg, activeAsset } = useCheckSave();
+  const { save, msg, activeAsset } = useLogSave('hydraulics');
   const [i, setI] = useState({ Q_pump: 50, Q_in: 20, drawVolume: 100, maxStartsPerHour: 10 });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>

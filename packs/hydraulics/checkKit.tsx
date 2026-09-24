@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { logRepo } from '../../db/logRepo';
-import { useActiveAsset } from '../../state/ActiveAssetContext';
+import React from 'react';
+import { SaveMsg } from '../../state/useLogSave';
 
 /** A labelled numeric input used across all asset check panels. */
 export const NumField: React.FC<{
@@ -18,36 +17,13 @@ export const NumField: React.FC<{
       step={step}
       value={Number.isFinite(value) ? value : ''}
       onChange={onChange}
-      className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-blue-500"
+      className="w-full p-2 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-orange-500"
     />
   </div>
 );
 
-/**
- * Shared save-to-log behaviour for every check panel: writes a `hydraulics`
- * log entry against the active asset and surfaces a non-blocking status message.
- */
-export function useCheckSave() {
-  const { activeAssetId, activeAsset, refreshEquipment } = useActiveAsset();
-  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
-
-  const save = async (inputs: Record<string, unknown>, outputs: Record<string, unknown>) => {
-    try {
-      await logRepo.add({ equipmentId: activeAssetId, kind: 'hydraulics', inputs, outputs });
-      await refreshEquipment();
-      setMsg({ text: `Saved to ${activeAsset ? activeAsset.tag : 'Unassigned'}`, ok: true });
-    } catch {
-      // Persistence failed — never lose what is on screen; surface a non-blocking notice.
-      setMsg({ text: 'Save failed — result is still on screen, try again', ok: false });
-    }
-    setTimeout(() => setMsg(null), 2500);
-  };
-
-  return { save, msg, activeAsset };
-}
-
 /** Save button + inline status message shared by all check panels. */
-export const SaveBar: React.FC<{ onSave: () => void; msg: { text: string; ok: boolean } | null; tag?: string }> = ({
+export const SaveBar: React.FC<{ onSave: () => void; msg: SaveMsg; tag?: string }> = ({
   onSave,
   msg,
   tag,
@@ -55,7 +31,7 @@ export const SaveBar: React.FC<{ onSave: () => void; msg: { text: string; ok: bo
   <div className="flex items-center gap-3">
     <button
       onClick={onSave}
-      className="bg-blue-600 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-blue-700 transition-colors"
+      className="bg-orange-700 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-orange-800 transition-colors"
     >
       Save to log{tag ? ` · ${tag}` : ' · Unassigned'}
     </button>

@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { evaluateCentrifugal } from '../../engines/centrifugal';
-import { NumField, SaveBar, useCheckSave, r2 } from './checkKit';
+import { NumField, SaveBar, r2 } from './checkKit';
+import { useLogSave } from '../../state/useLogSave';
 
 /** Centrifugal (transfer/process water) pump checks: TDH, NPSH margin, horsepower. */
 const CentrifugalChecks: React.FC = () => {
-  const { save, msg, activeAsset } = useCheckSave();
+  const { save, msg, activeAsset } = useLogSave('hydraulics');
   const [i, setI] = useState({ Q: 100, P_suction: 5, P_discharge: 60, SG: 1, NPSHr: 8, efficiency: 70 });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>

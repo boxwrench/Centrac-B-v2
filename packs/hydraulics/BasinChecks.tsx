@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import InfoCard from '../../components/ui/InfoCard';
 import { evaluateBasin } from '../../engines/basin';
-import { NumField, SaveBar, useCheckSave, r2 } from './checkKit';
+import { NumField, SaveBar, r2 } from './checkKit';
+import { useLogSave } from '../../state/useLogSave';
 
 const fmt = (n: number, unit: string) => (Number.isFinite(n) ? `${n.toFixed(1)} ${unit}` : '∞');
 
 /** Basin / tank checks: volume, detention time, surface loading, freeboard. */
 const BasinChecks: React.FC = () => {
-  const { save, msg, activeAsset } = useCheckSave();
+  const { save, msg, activeAsset } = useLogSave('hydraulics');
   const [i, setI] = useState({ length: 20, width: 10, waterDepth: 8, wallHeight: 10, Q_gpm: 50 });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>

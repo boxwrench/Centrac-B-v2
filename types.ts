@@ -1,12 +1,12 @@
 
 export enum AppTab {
-  ASSETS = 'assets',
-  DOSING = 'dosing',
-  HYDRAULICS = 'hydraulics',
-  MAINTENANCE = 'maintenance',
-  REPORT = 'report',
-  TROUBLESHOOTING = 'troubleshooting',
   MODEL = 'model',
+  MANUAL = 'manual',
+  TROUBLESHOOTING = 'troubleshoot',
+  MAINTENANCE = 'maintenance',
+  CALCS = 'calcs',
+  REPORT = 'report',
+  ASSETS = 'assets',
 }
 
 export type PmFieldType = 'reading' | 'checkitem' | 'select' | 'note';

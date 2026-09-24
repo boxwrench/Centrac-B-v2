@@ -7,64 +7,36 @@ This file tracks development sessions, decisions, and context for continuity acr
 ## Project Status
 
 Current State: Live on GitHub Pages (`main`, `/Centrac-B-v2/` base path)
-Primary Goal: Field engineering dashboard for API 675 pump troubleshooting and sizing
-Tech Stack: React + Vite + Tailwind + Dexie (IndexedDB) + Three.js (3D Model tab)
+Primary Goal: Offline-first field toolkit for plant operators, anchored on an
+interactive 3D Centrac B model, with plant-wide troubleshooting/maintenance,
+dosing/hydraulics calculators, and a daily report — all logged against a
+local equipment register (Dexie/IndexedDB), single device, no backend.
+Tech Stack: React + Vite + Tailwind + Dexie (IndexedDB) + Three.js (3D Model)
 
 ---
 
 ## Quick Context for New Sessions
 
-- App structure: tabbed dashboard (Suction & Ha, Discharge, Calibration, Troubleshooting)
-- UI is present; domain model and calculation rules need explicit documentation
-- Use this log to preserve the evolving model and decision history
-
----
-
-## Conceptual Model (Initial)
-
-System Model:
-- Pump system with suction conditions, discharge conditions, and calibration/dosing behavior
-- Troubleshooting matrix that maps symptoms to root causes and actions
-
-Inputs (expected):
-- Fluid properties (SG, temperature, vapor pressure)
-- Suction pressure, elevation, line losses
-- Discharge pressure, flow rate, head
-- Pump geometry / model parameters
-- Calibration settings (stroke length, speed, capacity)
-
-Outputs (expected):
-- NPSHa / suction margin
-- Head, performance, efficiency
-- Dosing rate and calibration adjustments
-- Troubleshooting guidance
-
-Constraints and Rules to Confirm:
-- API 675 compliance assumptions
-- Unit system and conversion rules
-- Valid ranges and failure thresholds
-- Required minimum inputs for each calculation path
-
-Failure Modes / Breakpoints:
-- Missing or inconsistent units
-- Out-of-range physical values
-- Insufficient data to compute NPSHa or dosing
-
-Optimization Levers:
-- Clear input validation
-- Fast feedback with sensible defaults
-- Traceable formula references
-
----
-
-## Initial Tasks (Model-First)
-
-- Map components to model: list each tab, its inputs, outputs, and formulas
-- Define the minimum input set for each tab to produce a valid result
-- Document constraints, breakpoints, and validation rules per tab
-- Identify and document formula sources (manual sections, references)
-- Add a small set of test cases for each tab (expected inputs/outputs)
-- Capture any known edge cases or unsupported configurations
+- Nav (in workflow order): 3D Model (landing, full-bleed) → Manual →
+  Troubleshoot → Maintenance → Calculators → Report → Assets. Hash routes
+  (`#/model`, `#/manual`, `#/troubleshoot`, `#/maintenance`, `#/calcs`,
+  `#/report`, `#/assets`) are owned by `state/NavContext.tsx`; no hash lands
+  on the model. `useNav().openPart(id)` / `openManual(page)` are the
+  cross-tab deep links (jump into the model, cut it open, focus a part; jump
+  to a manual page).
+- `packs/model/ModelPack.tsx` renders both the 3D explorer and the O&M PDF
+  reader (`view="model" | "manual"`); `App.tsx` keeps it mounted once opened
+  so the WebGL scene survives tab switches. Troubleshoot and Maintenance each
+  have two views via `components/ui/Segmented`: a manual-backed Centrac B
+  guide (`packs/model/ServiceGuides.tsx`, embedded via `.explorer-embed`) and
+  a plant-wide matrix/checklist (`constants.ts`'s `TROUBLESHOOTING_MATRIX` /
+  `PM_CHECKLIST`, filtered by the active asset's `EquipmentType`). Calculators
+  merges Dosing (`packs/dosing`) and equipment Checks (`packs/hydraulics`,
+  asset-type aware) the same way.
+- Domain content — Centrac B parts, 3D geometry, manual excerpts, plant
+  symptom/PM data, calculation engines — is documented in
+  `docs/MAKE-YOUR-OWN.md` and the `engines/*.test.ts` suite rather than here;
+  use this log for session-to-session decisions and history.
 
 ---
 
@@ -113,3 +85,46 @@ Optimization Levers:
 - Overlays: new hide-interface toggle in the tool rail, minimizable part
   card (auto-expands on new selection), slimmer control bar, and true
   full-bleed `:fullscreen` CSS for the existing fullscreen button.
+
+### 2026-09-24 — UX consolidation
+
+- The 3D model is now the landing page and renders full-bleed (`AppTab.MODEL`
+  first in `TABS`, the default when there is no hash, `ModelPack` mounted edge-to-edge
+  instead of inside the page column).
+- Nav reordered around the tech's actual workflow: 3D Model → Manual →
+  Troubleshoot → Maintenance → Calculators → Report → Assets.
+- The duplicate troubleshooting/maintenance surfaces were merged into single
+  tabs with two views each, switched by the new `Segmented` control: Troubleshoot
+  is "Centrac B · O&M manual" (manual-backed, via `ServiceGuides.tsx`) vs.
+  "Plant symptoms" (the asset-type-filtered `TROUBLESHOOTING_MATRIX`);
+  Maintenance is "Rounds & PM" vs. "Centrac B service intervals".
+- Dosing and Checks were merged into one "Calculators" tab ("Dosing &
+  calibration" / "Equipment checks" views) instead of separate top-level tabs.
+- Added `state/NavContext.tsx`: owns the hash route, tab state, and the
+  cross-tab deep links (`openPart`, `openManual`) that the model, manual
+  reader, and both service guides now use to jump into each other.
+- Removed the model explorer's internal header/workspace-tabs row — the app
+  header now owns all navigation. "Sources & references" moved out of that
+  header into the sidebar as a button that opens the reference modal.
+- Fixed the light-theme sidebar that had been left dark after the earlier
+  light-theme pass.
+- Added `components/ui/PageHeader.tsx` and `components/ui/Segmented.tsx` as
+  shared primitives for pack headers and the new two-view switchers.
+- One accent across the app: field packs moved from Tailwind blue to the
+  Centrac burnt orange used by the header and model; app renamed "Centrac B
+  Field Toolkit" (page title, PWA manifest, slate theme colour).
+- Phone layout: the header now fits on one row with the nav below it, and the
+  explorer stacks in a single column. The workspace block's 292px sidebar column
+  had been overriding the phone media query. Manual contents list is
+  left-aligned again (a `.explorer button` specificity clash).
+- Verified: `tsc --noEmit` clean, 141/141 Vitest passing (new `state/nav.test.ts`),
+  `npm run build` succeeds with `pumpScene`/`pdf` still lazy chunks. Checked
+  visually in headless Chromium (SwiftShader WebGL) at 1366, 1024, and 400 px wide.
+  The Troubleshoot → part link opens the cutaway with the part focused;
+  the manual links open the reader at the right page.
+- Dead-code sweep: removed the orphaned `PDF` constant and 31 orphaned CSS
+  rules (the old explorer header/workspace tabs, `.service-panel`,
+  `.status-dot`). The three copies of save-to-log + toast (checks, dosing,
+  troubleshooting) are now one hook, `state/useLogSave.ts`. `tsc --noUnusedLocals` is clean.
+- Fixed PM completion `outputs.date`: it was stamped in UTC, so after 5 pm
+  Pacific it showed tomorrow's date. It now uses the local-time `localDateKey`.

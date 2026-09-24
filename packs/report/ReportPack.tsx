@@ -5,6 +5,7 @@ import { logRepo } from '../../db/logRepo';
 import { reportRepo } from '../../db/reportRepo';
 import { SETTINGS_KEYS, readSetting, writeSetting } from '../../state/settings';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
+import PageHeader from '../../components/ui/PageHeader';
 
 type Status = 'pass' | 'fail' | 'warning' | 'neutral';
 
@@ -198,6 +199,10 @@ const ReportPack: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <div className="print:hidden">
+        <PageHeader title="Daily report" subtitle="Review today's logged work, exclude entries, and print." />
+      </div>
+
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -210,7 +215,7 @@ const ReportPack: React.FC = () => {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+              className="p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
         </div>
@@ -223,7 +228,7 @@ const ReportPack: React.FC = () => {
               value={plantName}
               onChange={(e) => handlePlantNameChange(e.target.value)}
               placeholder="Plant name"
-              className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 print:border-none print:p-0"
+              className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 print:border-none print:p-0"
             />
           </div>
           <div className="space-y-1">
@@ -233,7 +238,7 @@ const ReportPack: React.FC = () => {
               value={operatorName}
               onChange={(e) => handleOperatorNameChange(e.target.value)}
               placeholder="Operator name"
-              className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 print:border-none print:p-0"
+              className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 print:border-none print:p-0"
             />
           </div>
         </div>
@@ -242,7 +247,7 @@ const ReportPack: React.FC = () => {
           <button
             type="button"
             onClick={() => window.print()}
-            className="bg-blue-600 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-blue-700 transition-colors"
+            className="bg-orange-700 text-white font-semibold rounded-lg px-5 py-2.5 hover:bg-orange-800 transition-colors"
           >
             Print / Save as PDF
           </button>
@@ -334,7 +339,7 @@ const ReportPack: React.FC = () => {
           <div className="space-y-4">
             {Array.from(checksByAsset.entries()).map(([tag, entries]) => (
               <div key={tag}>
-                <h4 className="text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">{tag}</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wide text-orange-700 mb-2">{tag}</h4>
                 <div className="space-y-2">
                   {entries.map((e) => (
                     <RowShell
@@ -426,7 +431,7 @@ const ReportPack: React.FC = () => {
           onBlur={handleRemarksBlur}
           placeholder="Notes for the day..."
           rows={4}
-          className="print:hidden w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+          className="print:hidden w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500"
         />
         <p className="hidden print:block text-sm text-slate-700 whitespace-pre-wrap">
           {remarksDraft || 'None recorded.'}

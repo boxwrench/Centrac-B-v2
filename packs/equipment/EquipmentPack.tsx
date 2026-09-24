@@ -3,6 +3,7 @@ import { equipmentRepo } from '../../db/equipmentRepo';
 import { logRepo } from '../../db/logRepo';
 import { useActiveAsset } from '../../state/ActiveAssetContext';
 import { Equipment, EquipmentType, EQUIPMENT_TYPES, EQUIPMENT_TYPE_LABELS, LogEntry } from '../../types';
+import PageHeader from '../../components/ui/PageHeader';
 
 const TYPES: EquipmentType[] = EQUIPMENT_TYPES;
 
@@ -37,6 +38,11 @@ const EquipmentPack: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <PageHeader
+        title="Assets"
+        subtitle="Your plant's equipment register. Pick the active asset in the header; everything you log is saved against it."
+      />
+
       <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Add Equipment</h3>
         <form onSubmit={addEquipment} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -63,7 +69,7 @@ const EquipmentPack: React.FC = () => {
               className="w-full p-2 border border-slate-300 rounded-lg outline-none" placeholder="Centrac B" />
           </div>
           <button type="submit"
-            className="md:col-span-4 lg:col-span-1 bg-blue-600 text-white font-semibold rounded-lg px-4 py-2 hover:bg-blue-700 transition-colors">
+            className="md:col-span-4 lg:col-span-1 bg-orange-700 text-white font-semibold rounded-lg px-4 py-2 hover:bg-orange-800 transition-colors">
             Add
           </button>
         </form>
@@ -78,7 +84,7 @@ const EquipmentPack: React.FC = () => {
             {equipment.map((eq: Equipment) => (
               <button key={eq.id} onClick={() => setActiveAssetId(eq.id)}
                 className={`w-full text-left p-3 rounded-xl border transition-all ${
-                  activeAssetId === eq.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-slate-200 hover:bg-slate-50'
+                  activeAssetId === eq.id ? 'border-orange-500 bg-orange-50 ring-1 ring-orange-500' : 'border-slate-200 hover:bg-slate-50'
                 }`}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-slate-800">{eq.tag}</span>
@@ -106,7 +112,7 @@ const EquipmentPack: React.FC = () => {
             {history.map((h) => (
               <div key={h.id} className="p-3 rounded-lg border border-slate-200 text-sm">
                 <div className="flex justify-between">
-                  <span className="font-semibold uppercase text-blue-600 text-xs">{h.kind}</span>
+                  <span className="font-semibold uppercase text-orange-700 text-xs">{h.kind}</span>
                   <span className="text-xs text-slate-400">{new Date(h.timestamp).toLocaleString()}</span>
                 </div>
                 <p className="font-mono text-xs text-slate-600 mt-1 break-all">{JSON.stringify(h.outputs)}</p>

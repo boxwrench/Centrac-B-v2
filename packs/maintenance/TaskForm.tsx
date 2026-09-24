@@ -5,6 +5,7 @@ import { logRepo } from '../../db/logRepo';
 import { readingStatus, worstStatus, usageSince, daysOfSupply, analyzerDrift, catchVerdict, specificCapacity } from '../../engines/rounds';
 import { drawdownGph } from '../../engines/dosing';
 import InfoCard from '../../components/ui/InfoCard';
+import { localDateKey } from '../../engines/report';
 
 type Status = 'pass' | 'fail' | 'warning' | 'neutral';
 type FieldValue = number | string | boolean;
@@ -264,7 +265,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
         inputs: { taskId: task.id, label: task.label, values: valuesOut },
         outputs: {
           done: true,
-          date: new Date().toISOString().slice(0, 10),
+          date: localDateKey(Date.now()),
           readings,
           worstStatus: worstStatus(statuses),
         },
@@ -292,7 +293,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
                 value={Number.isFinite(num) ? num : ''}
                 placeholder={f.placeholder}
                 onChange={(e) => setValue(f.id, e.target.value === '' ? NaN : parseFloat(e.target.value))}
-                className="w-full p-2 pr-12 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 pr-12 border border-slate-300 rounded-lg outline-none font-mono focus:ring-2 focus:ring-orange-500"
               />
               {f.unit && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">{f.unit}</span>
@@ -344,7 +345,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           <select
             value={typeof v === 'string' ? v : ''}
             onChange={(e) => setValue(f.id, e.target.value)}
-            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 bg-white"
           >
             <option value="">Select…</option>
             {(f.options ?? []).map((opt) => (
@@ -366,7 +367,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           value={typeof v === 'string' ? v : ''}
           placeholder={f.placeholder}
           onChange={(e) => setValue(f.id, e.target.value)}
-          className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500"
         />
       </div>
     );
@@ -391,7 +392,7 @@ const TaskForm: React.FC<{ task: PmTask; scopeEquipmentId: string | null; onSave
           onClick={handleSave}
           disabled={!canSave || saving}
           className={`font-semibold rounded-lg px-5 py-2.5 transition-colors ${
-            canSave && !saving ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+            canSave && !saving ? 'bg-orange-700 text-white hover:bg-orange-800' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
           }`}
         >
           Save
